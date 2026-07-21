@@ -1,0 +1,789 @@
+:root {
+  /* Paleta derivada del logo. Para clonar el sitio a otro negocio se cambia solo este bloque. */
+  --primario: #1e3a72;
+  --primario-oscuro: #152b55;
+  --secundario: #3ba3d9;
+  --acento: #d32027;
+  --fondo: #eff6fc;
+  --superficie: #ffffff;
+  --neutro: #9e9e9e;
+  --borde: #d5dde6;
+  --texto: #1f2933;
+  --texto-suave: #5b6b79;
+  --whatsapp: #25d366;
+
+  --radio: 12px;
+  --sombra: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --sombra-alta: 0 8px 24px rgba(30, 58, 114, 0.12);
+
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--texto);
+  background: var(--fondo);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-weight: 700;
+  color: var(--primario);
+  line-height: 1.2;
+  margin: 0 0 0.75rem;
+}
+
+h1 {
+  font-size: 2rem;
+}
+h2 {
+  font-size: 1.75rem;
+}
+h3 {
+  font-size: 1.375rem;
+}
+h4 {
+  font-size: 1.125rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--primario);
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primario);
+  outline-offset: 2px;
+}
+
+.contenedor {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+section {
+  padding: 3rem 0;
+}
+
+/* El header es sticky: sin esto las anclas dejan el título tapado. */
+section[id] {
+  scroll-margin-top: 72px;
+}
+
+.seccion-blanca {
+  background: var(--superficie);
+}
+
+.subtitulo {
+  color: var(--texto-suave);
+  max-width: 60ch;
+}
+
+.marca-alma {
+  color: var(--secundario);
+}
+.marca-vet {
+  color: var(--primario);
+}
+
+/* ---------- Botones ---------- */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.625rem 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.boton:active {
+  transform: translateY(1px);
+}
+
+.boton-primario {
+  background: var(--primario);
+  color: #fff;
+}
+.boton-primario:hover {
+  background: var(--primario-oscuro);
+}
+
+.boton-secundario {
+  background: transparent;
+  color: var(--primario);
+  border: 2px solid var(--primario);
+}
+.boton-secundario:hover {
+  background: var(--primario);
+  color: #fff;
+}
+
+/* Sobre el azul del hero, el botón sólido azul no contrasta: se invierte. */
+.boton-hero {
+  background: #fff;
+  color: var(--primario);
+}
+.boton-hero:hover {
+  background: #dbe7f6;
+}
+
+.nav-cta {
+  display: none;
+}
+
+.boton-whatsapp {
+  background: var(--whatsapp);
+  color: #06331a;
+  width: 100%;
+}
+.boton-whatsapp:hover {
+  background: #1eb455;
+}
+
+/* ---------- Header ---------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borde);
+  transition: box-shadow 0.2s ease;
+}
+
+.header.con-scroll {
+  box-shadow: var(--sombra);
+}
+
+.header-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 64px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  font-size: 1.125rem;
+}
+
+/* Recorte del logo cuadrado: se muestra solo la cruz con el perro y el gato.
+   Ajustar background-position si se cambia el archivo. */
+.logo-marca {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: url('/logo.jpg') no-repeat 54% 29%;
+  background-size: 195%;
+}
+
+.nav {
+  display: none;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav a {
+  color: var(--texto);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 0;
+}
+
+.nav a:hover {
+  color: var(--primario);
+  box-shadow: inset 0 -2px 0 var(--secundario);
+}
+
+.menu-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--primario);
+  cursor: pointer;
+}
+
+.menu-movil {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0 1rem;
+  border-top: 1px solid var(--borde);
+}
+
+.menu-movil a {
+  padding: 0.75rem 0.25rem;
+  text-decoration: none;
+  color: var(--texto);
+  font-weight: 500;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  color: #fff;
+  background: linear-gradient(160deg, var(--primario) 0%, var(--primario-oscuro) 100%);
+  padding: 3rem 0;
+  overflow: hidden;
+}
+
+.hero-foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-velo {
+  position: absolute;
+  inset: 0;
+  /* Más oscuro a la izquierda (texto encima), más claro a la derecha
+     para que se vea el letrero real de la fachada. */
+  background: linear-gradient(
+    100deg,
+    rgba(21, 43, 85, 0.93) 0%,
+    rgba(21, 43, 85, 0.75) 55%,
+    rgba(30, 58, 114, 0.35) 100%
+  );
+}
+
+.hero .contenedor {
+  position: relative;
+}
+
+.hero-grid {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+
+.hero h1 {
+  color: #fff;
+  font-size: 2rem;
+}
+
+.hero p {
+  color: #dbe7f6;
+  max-width: 46ch;
+}
+
+.hero-logo {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto;
+  border-radius: var(--radio);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.hero-confianza {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: #cfe0f4;
+}
+
+.hero-confianza span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* ---------- Servicios ---------- */
+.grupo-servicios {
+  margin-top: 2.5rem;
+}
+
+.grupo-cabecera {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  border-bottom: 2px solid var(--secundario);
+  padding-bottom: 0.5rem;
+}
+
+.grupo-cabecera h3 {
+  margin: 0;
+}
+
+.grupo-tagline {
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+}
+
+.grid-servicios {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.seccion-blanca .tarjeta {
+  background: var(--fondo);
+}
+
+.tarjeta-icono {
+  color: var(--secundario);
+}
+
+.tarjeta h4 {
+  margin: 0;
+}
+
+.tarjeta p {
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+  margin: 0;
+  flex: 1;
+}
+
+.tarjeta-enlace {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 44px;
+  font-weight: 600;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  color: var(--primario);
+  cursor: pointer;
+}
+
+.tarjeta-enlace:hover {
+  color: var(--secundario);
+}
+
+/* ---------- Nosotros / Ubicación ---------- */
+.dos-columnas {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+
+.foto-marco {
+  border-radius: var(--radio);
+  overflow: hidden;
+  box-shadow: var(--sombra);
+  background: linear-gradient(160deg, #e3f2fb, #d5dde6);
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+}
+
+.foto-marco img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.foto-marco .placeholder-logo {
+  width: 240px;
+  height: 240px;
+  border-radius: var(--radio);
+}
+
+.datos-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.datos-lista li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.datos-lista svg {
+  color: var(--secundario);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.mapa {
+  border: 0;
+  width: 100%;
+  height: 300px;
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+/* ---------- Formulario ---------- */
+.form-envoltorio {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-alta);
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.seccion-blanca .form-envoltorio {
+  background: var(--fondo);
+}
+
+.ramas {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 1.5rem;
+}
+
+.rama-tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  padding: 1.25rem 0.75rem;
+  border: 2px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--texto);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.rama-tarjeta svg {
+  color: var(--secundario);
+}
+
+.rama-tarjeta:hover {
+  border-color: var(--secundario);
+}
+
+.rama-tarjeta[aria-pressed='true'] {
+  border-color: var(--primario);
+  background: #e7eefa;
+  color: var(--primario);
+}
+
+.rama-tarjeta small {
+  font-weight: 400;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+.campo {
+  margin-bottom: 1rem;
+}
+
+.campo label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  margin-bottom: 0.375rem;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--neutro);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  font: inherit;
+  color: var(--texto);
+}
+
+.campo textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.campo .ayuda {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+  margin-top: 0.25rem;
+}
+
+.error {
+  display: block;
+  color: var(--acento);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.campo-con-error input,
+.campo-con-error select,
+.campo-con-error textarea {
+  border-color: var(--acento);
+}
+
+.campos-rama {
+  animation: aparecer 0.25s ease;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campos-rama {
+    animation: none;
+  }
+}
+
+.urgente {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid #f3c7c9;
+  background: #fdf1f1;
+  border-radius: var(--radio);
+  margin-bottom: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.urgente input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--acento);
+  flex-shrink: 0;
+}
+
+/* ---------- Vista previa del mensaje (burbuja WhatsApp) ---------- */
+.form-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.preview-titulo {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  margin: 0 0 0.5rem;
+}
+
+.preview-wa {
+  /* Fondo beige del chat de WhatsApp: el usuario reconoce al instante qué va a pasar. */
+  background: #ece5dd;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 1rem;
+}
+
+.burbuja {
+  position: relative;
+  background: #d9fdd3;
+  color: #111b21;
+  border-radius: 10px;
+  border-top-right-radius: 2px;
+  padding: 0.625rem 0.75rem 1.375rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.burbuja-hora {
+  position: absolute;
+  right: 0.625rem;
+  bottom: 0.375rem;
+  font-size: 0.6875rem;
+  color: #667781;
+}
+
+/* Honeypot: fuera de pantalla en vez de display:none, que algunos bots detectan. */
+.trampa {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.nota-envio {
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+  text-align: center;
+  margin: 0.75rem 0 0;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  background: var(--primario-oscuro);
+  color: #cfe0f4;
+  padding: 2.5rem 0;
+}
+
+.footer h3 {
+  color: #fff;
+  font-size: 1rem;
+}
+
+.footer a {
+  color: #fff;
+}
+
+.footer-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.footer-legal {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin-top: 2rem;
+  padding-top: 1rem;
+  font-size: 0.875rem;
+}
+
+/* ---------- Botón flotante ---------- */
+.flotante {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.25rem;
+  border-radius: 999px;
+  background: var(--whatsapp);
+  color: #06331a;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  min-height: 56px;
+}
+
+.flotante span {
+  display: none;
+}
+
+.flotante:hover {
+  background: #1eb455;
+}
+
+/* ---------- Breakpoints ---------- */
+@media (min-width: 640px) {
+  h1,
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  .grid-servicios {
+    /* auto-fit: el grupo de 2 tarjetas llena el ancho igual que el de 3 */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .footer-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .form-envoltorio {
+    padding: 2rem;
+  }
+  .flotante span {
+    display: inline;
+  }
+  .nav-cta {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  section {
+    padding: 5rem 0;
+  }
+  .hero {
+    padding: 5rem 0;
+  }
+  .hero-grid,
+  .dos-columnas {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+  /* Dos columnas solo cuando ya hay rama elegida (existe la vista previa). */
+  .form-grid:has(.preview-col) {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  .preview-col {
+    position: sticky;
+    top: 88px;
+  }
+  .nav {
+    display: flex;
+  }
+  .menu-boton {
+    display: none;
+  }
+  .hero-logo {
+    width: 260px;
+    height: 260px;
+  }
+}
