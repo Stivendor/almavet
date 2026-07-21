@@ -17,6 +17,7 @@ const vacio = {
   fechaConsulta: '',
   franja: '',
   urgente: false,
+  autoriza: false, // Ley 1581/2012: la autorización debe ser expresa y previa al envío
   web: '', // honeypot: los humanos no lo ven, los bots lo llenan
 }
 
@@ -35,6 +36,7 @@ function validar(rama, f) {
     if (!f.motivo) e.motivo = 'Selecciona el motivo de la consulta'
     if (!f.fechaConsulta) e.fechaConsulta = 'Elige la fecha deseada para la consulta'
   }
+  if (!f.autoriza) e.autoriza = 'Debes autorizar el tratamiento de tus datos para enviar la solicitud'
   return e
 }
 
@@ -277,6 +279,33 @@ export default function AppointmentForm({ rama, setRama }) {
         value={f.web}
         onChange={set('web')}
       />
+
+      <label className={`consentimiento${errores.autoriza ? ' campo-con-error' : ''}`} htmlFor="autoriza">
+        <input
+          id="autoriza"
+          type="checkbox"
+          checked={f.autoriza}
+          onChange={set('autoriza')}
+          aria-invalid={errores.autoriza ? 'true' : undefined}
+          aria-describedby={errores.autoriza ? 'autoriza-error' : undefined}
+        />
+        <span>
+          Autorizo el tratamiento de mis datos personales conforme a la{' '}
+          <a href="/legal.html#privacidad" target="_blank" rel="noopener">
+            política de datos
+          </a>{' '}
+          y acepto los{' '}
+          <a href="/legal.html#terminos" target="_blank" rel="noopener">
+            términos y condiciones
+          </a>
+          .
+        </span>
+      </label>
+      {errores.autoriza && (
+        <span className="error" id="autoriza-error" role="alert">
+          {errores.autoriza}
+        </span>
+      )}
 
       <button type="submit" className="boton boton-whatsapp">
         <MessageCircle size={20} aria-hidden="true" />

@@ -148,9 +148,10 @@ export default function App() {
               <img
                 className="hero-foto"
                 src={clinica.fotoHero}
-                alt={`Fachada de ${clinica.nombre}`}
+                alt={`Fachada de ${clinica.nombre} en ${clinica.barrio}`}
                 width="1344"
                 height="799"
+                fetchPriority="high"
               />
               <div className="hero-velo" />
             </>
@@ -204,7 +205,7 @@ export default function App() {
 
         <section id="servicios" className="seccion-blanca">
           <div className="contenedor">
-            <h2>Nuestros servicios</h2>
+            <h2>Servicios veterinarios y de estilismo para perros y gatos</h2>
             <p className="subtitulo">Dos áreas bajo el mismo techo.</p>
             {gruposServicios.map(({ rama: r, titulo: tituloGrupo, tagline, servicios }) => (
               <div className="grupo-servicios" key={r}>
@@ -265,7 +266,7 @@ export default function App() {
         <section id="ubicacion" className="seccion-blanca">
           <div className="contenedor dos-columnas">
             <div>
-              <h2>Dónde estamos</h2>
+              <h2>Dónde estamos: Santo Domingo Savio, Medellín</h2>
               <ul className="datos-lista">
                 {clinica.direccion && (
                   <li>
@@ -313,7 +314,7 @@ export default function App() {
 
         <section id="agendar">
           <div className="contenedor">
-            <h2>Agenda tu cita</h2>
+            <h2>Agenda tu cita veterinaria</h2>
             <p className="subtitulo">
               Cuéntanos qué necesita tu mascota. Al enviar se abre WhatsApp con tu solicitud ya
               redactada, así atendemos más rápido y sin confusiones.
@@ -365,7 +366,9 @@ export default function App() {
             </div>
           </div>
           <p className="footer-legal">
-            © {new Date().getFullYear()} {clinica.nombre}. Todos los derechos reservados.
+            © {new Date().getFullYear()} {clinica.nombre}. Todos los derechos reservados. ·{' '}
+            <a href="/legal.html#terminos">Términos y condiciones</a> ·{' '}
+            <a href="/legal.html#privacidad">Política de datos</a>
           </p>
         </div>
       </footer>

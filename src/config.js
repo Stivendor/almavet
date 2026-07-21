@@ -1,7 +1,7 @@
 // Datos del negocio. Al clonar el sitio para otro cliente, solo se edita este archivo
 // (y las variables de color en index.css).
 export const clinica = {
-  nombre: 'Centro Veterinario AlmaVET',
+  nombre: 'Centro Veterinario AlmaVet',
   whatsapp: '573204387439',
   whatsappVisible: '+57 320 438 7439',
 

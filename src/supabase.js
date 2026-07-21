@@ -39,6 +39,7 @@ export function guardarSolicitud(f) {
       fecha_consulta: oNull(f.fechaConsulta),
       franja: oNull(f.franja),
       urgente: Boolean(f.urgente),
+      autorizacion_datos: Boolean(f.autoriza),
     }),
   })
     .then(async (r) => {

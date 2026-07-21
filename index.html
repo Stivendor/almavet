@@ -4,23 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/jpeg" href="/logo.jpg" />
+    <link rel="apple-touch-icon" href="/logo.jpg" />
     <meta name="theme-color" content="#1E3A72" />
 
-    <title>Veterinaria en Santo Domingo Savio, Medellín | Centro Veterinario AlmaVET</title>
+    <!-- Marca primero: la pestaña es angosta y solo alcanza a mostrar el arranque. -->
+    <title>AlmaVet | Veterinaria en Santo Domingo Savio, Medellín</title>
     <meta
       name="description"
-      content="Centro Veterinario AlmaVET en Santo Domingo Savio, Medellín: consultas clínicas, vacunación, baño y corte de pelo. Agenda tu cita por WhatsApp en menos de un minuto."
+      content="Centro Veterinario AlmaVet en Santo Domingo Savio, Medellín: consultas clínicas, vacunación, baño y corte de pelo para perros y gatos. Agenda tu cita por WhatsApp en menos de un minuto."
     />
+    <!-- __SITE_URL__ lo inyecta vite.config.js: ahí se cambia el dominio una sola vez. -->
+    <link rel="canonical" href="__SITE_URL__/" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Centro Veterinario AlmaVET | Santo Domingo Savio, Medellín" />
+    <meta property="og:site_name" content="Centro Veterinario AlmaVet" />
+    <meta property="og:url" content="__SITE_URL__/" />
+    <meta property="og:title" content="Centro Veterinario AlmaVet | Santo Domingo Savio, Medellín" />
     <meta
       property="og:description"
-      content="Consultas clínicas, vacunación, baño y corte de pelo. Agenda tu cita por WhatsApp."
+      content="Consultas clínicas, vacunación, baño y corte de pelo para perros y gatos. Agenda tu cita por WhatsApp."
     />
-    <!-- TODO: al publicar, cambiar por la URL absoluta (https://dominio/logo.jpg): WhatsApp no resuelve rutas relativas. -->
-    <meta property="og:image" content="/logo.jpg" />
+    <!-- Absoluta: WhatsApp y Facebook no resuelven rutas relativas. -->
+    <meta property="og:image" content="__SITE_URL__/sede.jpg" />
+    <meta property="og:image:alt" content="Fachada del Centro Veterinario AlmaVet" />
     <meta property="og:locale" content="es_CO" />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,14 +36,20 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- La foto del hero es el LCP: se pide antes de que React monte. -->
+    <link rel="preload" as="image" href="/sede.jpg" fetchpriority="high" />
 
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "VeterinaryCare",
-        "name": "Centro Veterinario AlmaVET",
+        "@id": "__SITE_URL__/#clinica",
+        "name": "Centro Veterinario AlmaVet",
+        "description": "Clínica veterinaria y estilista para perros y gatos en Santo Domingo Savio, Medellín.",
+        "url": "__SITE_URL__/",
         "telephone": "+573204387439",
-        "image": "/logo.jpg",
+        "image": "__SITE_URL__/sede.jpg",
+        "logo": "__SITE_URL__/logo.jpg",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "Cra. 33 #107a-47, Santo Domingo Savio I",
@@ -43,11 +57,62 @@
           "addressRegion": "Antioquia",
           "addressCountry": "CO"
         },
+        "areaServed": {
+          "@type": "City",
+          "name": "Medellín"
+        },
+        "hasMap": "https://www.google.com/maps/search/?api=1&query=Cra.%2033%20%23107a-47%2C%20Santo%20Domingo%20Savio%20I%2C%20Medell%C3%ADn%2C%20Antioquia",
         "openingHours": ["Mo-Fr 10:00-19:00", "Sa 10:00-20:00", "Su 10:00-16:00"],
         "sameAs": [
           "https://www.instagram.com/cvalmavet",
           "https://www.facebook.com/cvalmavet"
-        ]
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Servicios",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Consulta veterinaria general",
+                "description": "Revisión completa para perros y gatos."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Vacunación y desparasitación",
+                "description": "Esquema de vacunas al día, con carné y recordatorios."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Urgencias y cirugía veterinaria",
+                "description": "Valoración prequirúrgica y seguimiento posoperatorio."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Baño para perros y gatos",
+                "description": "Baño con productos según tipo de pelo y piel, secado y cepillado."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Baño y corte de pelo",
+                "description": "Corte de raza o el estilo que prefieras, con baño incluido."
+              }
+            }
+          ]
+        }
       }
     </script>
   </head>
