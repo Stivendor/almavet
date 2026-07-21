@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Scissors, Stethoscope, MessageCircle } from 'lucide-react'
+import { Scissors, Stethoscope, MessageCircle, Clock } from 'lucide-react'
 import { construirMensaje, enlaceWhatsApp, hoyISO, normalizarTelefono } from './whatsapp'
 import { guardarSolicitud } from './supabase'
+import { clinica } from './config'
 
 const vacio = {
   nombreDueno: '',
@@ -110,41 +111,41 @@ export default function AppointmentForm({ rama, setRama }) {
 
   return (
     <form className="form-envoltorio" onSubmit={enviar} noValidate>
-      <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
-        <legend className="campo">
-          <strong>¿Qué necesita tu mascota?</strong>
-        </legend>
-        <div className="ramas">
-          <button
-            type="button"
-            className="rama-tarjeta"
-            aria-pressed={rama === 'estilista'}
-            onClick={() => setRama('estilista')}
-          >
-            <Scissors size={28} aria-hidden="true" />
-            Estilista
-            <small>Baño y corte de pelo</small>
-          </button>
-          <button
-            type="button"
-            className="rama-tarjeta"
-            aria-pressed={rama === 'clinica'}
-            onClick={() => setRama('clinica')}
-          >
-            <Stethoscope size={28} aria-hidden="true" />
-            Clínica
-            <small>Consultas y vacunación</small>
-          </button>
-        </div>
-        {errores.rama && (
-          <span className="error" role="alert">
-            {errores.rama}
-          </span>
-        )}
-      </fieldset>
-
       <div className="form-grid">
-        <div>
+        <div className="form-campos">
+          <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
+            <legend className="campo">
+              <strong>¿Qué necesita tu mascota?</strong>
+            </legend>
+            <div className="ramas">
+              <button
+                type="button"
+                className="rama-tarjeta"
+                aria-pressed={rama === 'estilista'}
+                onClick={() => setRama('estilista')}
+              >
+                <Scissors size={28} aria-hidden="true" />
+                Estilista
+                <small>Baño y corte de pelo</small>
+              </button>
+              <button
+                type="button"
+                className="rama-tarjeta"
+                aria-pressed={rama === 'clinica'}
+                onClick={() => setRama('clinica')}
+              >
+                <Stethoscope size={28} aria-hidden="true" />
+                Clínica
+                <small>Consultas y vacunación</small>
+              </button>
+            </div>
+            {errores.rama && (
+              <span className="error" role="alert">
+                {errores.rama}
+              </span>
+            )}
+          </fieldset>
+
           <Campo id="nombreDueno" etiqueta="Tu nombre" error={errores.nombreDueno}>
             <input type="text" autoComplete="name" {...props('nombreDueno')} />
           </Campo>
@@ -254,6 +255,57 @@ export default function AppointmentForm({ rama, setRama }) {
               </label>
             </div>
           )}
+
+          <input
+            className="trampa"
+            type="text"
+            name="web"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            value={f.web}
+            onChange={set('web')}
+          />
+
+          {/* Consentimiento y envío van dentro de la columna de campos: son parte
+              del formulario, no del ancho completo de la sección. */}
+          <label
+            className={`consentimiento${errores.autoriza ? ' campo-con-error' : ''}`}
+            htmlFor="autoriza"
+          >
+            <input
+              id="autoriza"
+              type="checkbox"
+              checked={f.autoriza}
+              onChange={set('autoriza')}
+              aria-invalid={errores.autoriza ? 'true' : undefined}
+              aria-describedby={errores.autoriza ? 'autoriza-error' : undefined}
+            />
+            <span>
+              Autorizo el tratamiento de mis datos personales conforme a la{' '}
+              <a href="/legal.html#privacidad" target="_blank" rel="noopener">
+                política de datos
+              </a>{' '}
+              y acepto los{' '}
+              <a href="/legal.html#terminos" target="_blank" rel="noopener">
+                términos y condiciones
+              </a>
+              .
+            </span>
+          </label>
+          {errores.autoriza && (
+            <span className="error" id="autoriza-error" role="alert">
+              {errores.autoriza}
+            </span>
+          )}
+
+          <button type="submit" className="boton boton-whatsapp">
+            <MessageCircle size={20} aria-hidden="true" />
+            Enviar por WhatsApp
+          </button>
+          <p className="nota-envio">
+            Se abrirá WhatsApp con tu solicitud ya escrita, solo debes enviarla.
+          </p>
         </div>
 
         {rama && (
@@ -265,55 +317,21 @@ export default function AppointmentForm({ rama, setRama }) {
                 <span className="burbuja-hora">{horaPreview}</span>
               </div>
             </div>
+            <ul className="preview-datos">
+              {clinica.horarioResumen && (
+                <li>
+                  <Clock size={16} aria-hidden="true" />
+                  {clinica.horarioResumen}
+                </li>
+              )}
+              <li>
+                <MessageCircle size={16} aria-hidden="true" />
+                Te confirmamos la cita por el mismo chat.
+              </li>
+            </ul>
           </aside>
         )}
       </div>
-
-      <input
-        className="trampa"
-        type="text"
-        name="web"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden="true"
-        value={f.web}
-        onChange={set('web')}
-      />
-
-      <label className={`consentimiento${errores.autoriza ? ' campo-con-error' : ''}`} htmlFor="autoriza">
-        <input
-          id="autoriza"
-          type="checkbox"
-          checked={f.autoriza}
-          onChange={set('autoriza')}
-          aria-invalid={errores.autoriza ? 'true' : undefined}
-          aria-describedby={errores.autoriza ? 'autoriza-error' : undefined}
-        />
-        <span>
-          Autorizo el tratamiento de mis datos personales conforme a la{' '}
-          <a href="/legal.html#privacidad" target="_blank" rel="noopener">
-            política de datos
-          </a>{' '}
-          y acepto los{' '}
-          <a href="/legal.html#terminos" target="_blank" rel="noopener">
-            términos y condiciones
-          </a>
-          .
-        </span>
-      </label>
-      {errores.autoriza && (
-        <span className="error" id="autoriza-error" role="alert">
-          {errores.autoriza}
-        </span>
-      )}
-
-      <button type="submit" className="boton boton-whatsapp">
-        <MessageCircle size={20} aria-hidden="true" />
-        Enviar por WhatsApp
-      </button>
-      <p className="nota-envio">
-        Se abrirá WhatsApp con tu solicitud ya escrita, solo debes enviarla.
-      </p>
     </form>
   )
 }

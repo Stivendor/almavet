@@ -7,7 +7,6 @@ import {
   HeartPulse,
   MapPin,
   Clock,
-  Phone,
   MessageCircle,
   Menu,
   X,
@@ -100,10 +99,6 @@ function Header() {
             ))}
           </nav>
 
-          <a className="boton boton-primario nav-cta" href="#agendar">
-            Agendar cita
-          </a>
-
           <button
             className="menu-boton"
             aria-expanded={abierto}
@@ -159,9 +154,8 @@ export default function App() {
           <div className="contenedor">
             <div className="hero-grid">
               <div>
-                <h1>
-                  Cuidamos a tu mascota como en <span className="marca-alma">ALMA</span>VET
-                </h1>
+                {/* El letrero de la fachada ya dice la marca: el h1 dice qué somos y dónde. */}
+                <h1>Tu veterinaria de barrio en Santo Domingo Savio</h1>
                 <p>
                   Consulta clínica, vacunación, baño y corte de pelo para perros y gatos. Agenda tu
                   cita en un minuto y te confirmamos por WhatsApp.
@@ -219,12 +213,14 @@ export default function App() {
                       <Icono className="tarjeta-icono" size={28} aria-hidden="true" />
                       <h4>{titulo}</h4>
                       <p>{texto}</p>
+                      {/* Cada botón nombra su servicio: cinco "Agendar este servicio"
+                          seguidos son indistinguibles en una lista de lector de pantalla. */}
                       <button
                         className="tarjeta-enlace"
                         type="button"
                         onClick={() => agendarCon(r)}
                       >
-                        Agendar este servicio <ArrowRight size={16} aria-hidden="true" />
+                        Agendar {titulo.toLowerCase()} <ArrowRight size={16} aria-hidden="true" />
                       </button>
                     </article>
                   ))}
@@ -235,13 +231,15 @@ export default function App() {
         </section>
 
         <section id="nosotros">
-          <div className="contenedor dos-columnas">
-            <div>
+          {/* Sin foto del equipo no se rellena con el logo: una sección sobre personas
+              que muestra un logotipo se contradice sola. El texto corre a ancho de lectura. */}
+          <div className={`contenedor${clinica.fotoEquipo ? ' dos-columnas' : ''}`}>
+            <div className={clinica.fotoEquipo ? undefined : 'bloque-solo'}>
               <h2>Sobre nosotros</h2>
               <p className="subtitulo">{clinica.sobreNosotros}</p>
             </div>
-            <div className="foto-marco">
-              {clinica.fotoEquipo ? (
+            {clinica.fotoEquipo && (
+              <div className="foto-marco">
                 <img
                   src={clinica.fotoEquipo}
                   alt={`Equipo de ${clinica.nombre}`}
@@ -249,17 +247,8 @@ export default function App() {
                   height="600"
                   loading="lazy"
                 />
-              ) : (
-                <img
-                  className="placeholder-logo"
-                  src="/logo.jpg"
-                  alt=""
-                  width="240"
-                  height="240"
-                  loading="lazy"
-                />
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </section>
 
@@ -284,9 +273,10 @@ export default function App() {
                   </li>
                 )}
                 <li>
-                  <Phone size={20} aria-hidden="true" />
+                  {/* El enlace abre un chat, no una llamada: el icono debe decir lo mismo. */}
+                  <MessageCircle size={20} aria-hidden="true" />
                   <a href={enlaceWhatsApp(mensajeGenerico)} target="_blank" rel="noopener">
-                    {clinica.whatsappVisible}
+                    WhatsApp {clinica.whatsappVisible}
                   </a>
                 </li>
               </ul>
