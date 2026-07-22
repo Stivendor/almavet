@@ -61,9 +61,44 @@ a {
 }
 
 .barra-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-family: 'Montserrat', system-ui, sans-serif;
   font-weight: 700;
   letter-spacing: 0.02em;
+}
+
+.barra-logo {
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+}
+
+/* En escritorio la barra cabe en una fila: marca, pestañas y usuario. Dos filas
+   de azul eran ~100px de pantalla antes del primer dato útil. */
+@media (min-width: 900px) {
+  .barra {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.4rem 1rem;
+  }
+  /* display:contents disuelve la caja: marca y usuario pasan a ser hijos
+     directos del flex de la barra. */
+  .barra-fila {
+    display: contents;
+  }
+  .barra-marca {
+    order: 1;
+  }
+  .nav {
+    order: 2;
+    padding: 0;
+  }
+  .barra-usuario {
+    order: 3;
+  }
 }
 
 .barra-usuario {
@@ -141,6 +176,15 @@ a {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+/* auto-fill y no auto-fit: la fila incompleta conserva el ancho de columna en
+   vez de estirar una tarjeta suelta a lo ancho de la página. */
+.rejilla-citas {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  align-items: start;
+}
+
 .cifra {
   display: block;
   font-family: 'Montserrat', system-ui, sans-serif;
@@ -148,6 +192,16 @@ a {
   font-weight: 700;
   color: var(--primario);
   line-height: 1.1;
+}
+/* Cero pendientes = tarjeta en reposo. El gris le dice al ojo "aquí no hay nada
+   que hacer" sin tener que leer. */
+.cifra-cero {
+  color: var(--neutro);
+}
+/* Tarea con pendientes: la única tarjeta que levanta la voz en el tablero. */
+.con-pendientes {
+  border-color: var(--secundario);
+  box-shadow: inset 3px 0 0 var(--secundario);
 }
 .etiqueta {
   color: var(--texto-suave);
@@ -159,6 +213,22 @@ a {
 }
 .pequeno {
   font-size: 0.85rem;
+}
+
+/* Diagnóstico y tratamiento: lo que de verdad se busca al abrir un historial. */
+.linea-destacada {
+  font-weight: 600;
+}
+
+/* Botón que se comporta como enlace, para acciones dentro de un texto. */
+.enlace {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--primario);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 /* ---------- Tablas ---------- */

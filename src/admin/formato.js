@@ -60,18 +60,6 @@ export function edad(nacimiento, hoy = hoyISO()) {
   return partes.join(' ')
 }
 
-// Citas del día agrupadas por hora, en orden. La agenda se lee así en voz alta:
-// "a las 10 tienes tres". Devuelve [['10:00 a. m.', [cita, ...]], ...].
-export function agruparPorHora(citas) {
-  const grupos = new Map()
-  for (const c of [...citas].sort((x, y) => x.fecha_hora.localeCompare(y.fecha_hora))) {
-    const clave = hora(c.fecha_hora)
-    if (!grupos.has(clave)) grupos.set(clave, [])
-    grupos.get(clave).push(c)
-  }
-  return [...grupos]
-}
-
 // Rango [desde, hasta) en ISO para consultar citas de un día o de una semana.
 export function rango(desdeISO, dias) {
   const d = new Date(`${desdeISO}T00:00:00`)

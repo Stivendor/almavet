@@ -1,7 +1,6 @@
 // node src/admin/formato.test.mjs
 import assert from 'node:assert/strict'
 import {
-  agruparPorHora,
   citaACalendario,
   diaCorto,
   diaSemana,
@@ -43,24 +42,6 @@ assert.equal(
 )
 assert.equal(totalCobro({ cobro_items: [] }), 0)
 assert.equal(totalCobro(null), 0)
-
-// Agrupar por hora: mismo horario junto y en orden ascendente, aunque lleguen al revés.
-const citas = [
-  { id: 'c', fecha_hora: '2026-03-04T15:00:00Z' },
-  { id: 'a', fecha_hora: '2026-03-04T14:00:00Z' },
-  { id: 'b', fecha_hora: '2026-03-04T14:00:00Z' },
-]
-const grupos = agruparPorHora(citas)
-assert.equal(grupos.length, 2)
-assert.deepEqual(
-  grupos[0][1].map((c) => c.id),
-  ['a', 'b'],
-)
-assert.deepEqual(
-  grupos[1][1].map((c) => c.id),
-  ['c'],
-)
-assert.deepEqual(citas.map((c) => c.id), ['c', 'a', 'b'], 'no reordena el array que recibe')
 
 // Lunes de la semana. El 4 de marzo de 2026 es miércoles.
 assert.equal(lunes('2026-03-04'), '2026-03-02')

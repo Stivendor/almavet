@@ -84,7 +84,12 @@ function Panel({ sesion }) {
     <>
       <header className="barra">
         <div className="barra-fila">
-          <span className="barra-marca">AlmaVET</span>
+          <span className="barra-marca">
+            {/* El logo real, no un wordmark en texto: el único rasgo de identidad
+                que se permite esta herramienta. */}
+            <img className="barra-logo" src="/logo.jpg" alt="" width="26" height="26" />
+            AlmaVET
+          </span>
           <span className="barra-usuario">
             {yo?.nombre ?? sesion.user.email}
             <button

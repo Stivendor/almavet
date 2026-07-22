@@ -68,7 +68,14 @@ export default function Solicitudes() {
 
       <Estado cargando={cargando} error={error}>
         {datos?.length === 0 ? (
-          <p className="aviso">No hay solicitudes {filtro && `en estado "${filtro}"`}.</p>
+          <p className="aviso">
+            No hay solicitudes {filtro && `en estado "${filtro}"`}.{' '}
+            {filtro && (
+              <button className="enlace" type="button" onClick={() => setFiltro('')}>
+                Ver todas
+              </button>
+            )}
+          </p>
         ) : (
           <div className="tabla-marco">
             <table>

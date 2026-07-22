@@ -177,8 +177,10 @@ function Historial({ mascotaId }) {
               </div>
               <Linea etiqueta="Motivo" texto={v.anamnesis} />
               <Linea etiqueta="Examen físico" texto={v.examen_fisico} />
-              <Linea etiqueta="Diagnóstico" texto={v.diagnostico} />
-              <Linea etiqueta="Tratamiento" texto={v.tratamiento} />
+              {/* Quien abre el historial casi siempre busca esto: qué tenía y qué
+                  se recetó. Las otras líneas son contexto. */}
+              <Linea etiqueta="Diagnóstico" texto={v.diagnostico} destacada />
+              <Linea etiqueta="Tratamiento" texto={v.tratamiento} destacada />
               <Linea etiqueta="Observaciones" texto={v.observaciones} />
             </div>
           ))
@@ -207,9 +209,9 @@ function Historial({ mascotaId }) {
   )
 }
 
-const Linea = ({ etiqueta, texto }) =>
+const Linea = ({ etiqueta, texto, destacada }) =>
   texto ? (
-    <p style={{ margin: '0 0 0.4rem' }}>
+    <p className={destacada ? 'linea-destacada' : undefined} style={{ margin: '0 0 0.4rem' }}>
       <span className="etiqueta">{etiqueta}: </span>
       {texto}
     </p>
