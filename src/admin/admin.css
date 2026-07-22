@@ -201,22 +201,19 @@ th.numero {
 }
 
 /* ---------- Agenda por columnas ---------- */
-/* Ancho fijo por columna y scroll horizontal: siete columnas elásticas en un
-   móvil dejan cada día en 45 px, que no alcanza ni para el nombre de la mascota. */
+/* Sin scroll horizontal: `auto-fit` mete los siete días en una fila mientras
+   quepan a 8.5rem, y cuando no caben baja los que sobran a una segunda fila.
+   Columnas elásticas puras dejarían cada día en 45 px en un móvil. */
 .agenda {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(11rem, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
   gap: 0.5rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
   align-items: start;
 }
 
-/* Un solo día no necesita scroll ni columnas estrechas. */
+/* Un solo día ocupa el ancho completo. */
 .agenda-dia {
-  grid-auto-columns: 1fr;
-  overflow-x: visible;
+  grid-template-columns: 1fr;
 }
 
 .agenda-col {
@@ -224,6 +221,9 @@ th.numero {
   border: 1px solid var(--borde);
   border-radius: var(--radio);
   padding: 0.5rem;
+  /* Sin esto la columna se ensancha para caber un "Golden Retriever" de una sola
+     pieza y devuelve el scroll horizontal que acabamos de quitar. */
+  min-width: 0;
 }
 
 .agenda-col.es-hoy {
@@ -268,25 +268,59 @@ th.numero {
   padding: 0.5rem;
   margin-bottom: 0.5rem;
   background: var(--fondo);
+  overflow-wrap: anywhere;
 }
 .agenda-cita:last-child {
   margin-bottom: 0;
 }
 
+.agenda-fila {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* La hora no se parte nunca: "9:00 a. m." en dos líneas es ilegible de un vistazo,
+   que es justo para lo que sirve una agenda. */
 .agenda-hora {
   font-weight: 600;
   font-size: 0.85rem;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.agenda-acciones {
-  display: flex;
-  gap: 0.3rem;
-  margin-top: 0.4rem;
+.agenda-cal {
+  margin-left: auto;
+  color: var(--texto-suave);
+  line-height: 0;
+  padding: 0.2rem;
 }
-.agenda-acciones select {
+.agenda-cal:hover {
+  color: var(--primario);
+}
+
+.agenda-estado {
+  margin-top: 0.4rem;
   font-size: 0.78rem;
   padding: 0.2rem 0.3rem;
+}
+
+/* El estado se lee por el color del borde; el select lo dice con palabras. */
+.agenda-cita[data-estado='atendida'] {
+  border-left-color: var(--exito);
+}
+.agenda-cita[data-estado='confirmada'] {
+  border-left-color: var(--secundario);
+}
+.agenda-cita[data-estado='agendada'] {
+  border-left-color: var(--neutro);
+}
+.agenda-cita[data-estado='no_asistio'] {
+  border-left-color: var(--acento);
+}
+.agenda-cita[data-estado='cancelada'] {
+  border-left-color: var(--acento);
+  opacity: 0.6;
 }
 
 /* ---------- Chips de estado ---------- */

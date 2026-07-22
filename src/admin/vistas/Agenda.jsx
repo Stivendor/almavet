@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { CalendarPlus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { citas as leerCitas, guardarCita } from '../db.js'
 import { useAsync } from '../useAsync.js'
-import { Chip, Estado } from '../ui.jsx'
+import { Estado } from '../ui.jsx'
 import {
   citaACalendario,
   diaCorto,
@@ -113,40 +113,41 @@ export default function Agenda() {
                 <p className="agenda-vacio">Sin citas</p>
               ) : (
                 citasDelDia.map((c) => (
-                  <article className="agenda-cita" key={c.id}>
-                    <div className="agenda-hora">
-                      {hora(c.fecha_hora)}
-                      <span className="suave"> · {c.duracion_min} min</span>
-                    </div>
-                    <a href={`#/mascotas/${c.mascota_id}`}>{c.mascotas?.nombre}</a>
-                    <div className="pequeno suave">{c.mascotas?.duenos?.nombre}</div>
-                    <div className="pequeno suave">
-                      {c.rama}
-                      {c.motivo && ` · ${c.motivo}`}
-                    </div>
-                    <Chip valor={c.estado} />
-                    <div className="agenda-acciones">
-                      <select
-                        aria-label={`Estado de la cita de ${c.mascotas?.nombre}`}
-                        value={c.estado}
-                        onChange={(e) => cambiarEstado(c.id, e.target.value)}
-                      >
-                        {ESTADOS.map((e) => (
-                          <option key={e} value={e}>
-                            {e.replace('_', ' ')}
-                          </option>
-                        ))}
-                      </select>
+                  <article className="agenda-cita" data-estado={c.estado} key={c.id}>
+                    <div className="agenda-fila">
+                      <span className="agenda-hora">{hora(c.fecha_hora)}</span>
                       <a
-                        className="boton boton-mini boton-suave"
+                        className="agenda-cal"
                         href={citaACalendario(c, c.mascotas?.nombre, c.mascotas?.duenos?.nombre)}
                         target="_blank"
                         rel="noopener"
                         title="Añadir a Google Calendar"
+                        aria-label={`Añadir a Google Calendar la cita de ${c.mascotas?.nombre}`}
                       >
-                        <CalendarPlus size={13} aria-hidden="true" />
+                        <CalendarPlus size={14} aria-hidden="true" />
                       </a>
                     </div>
+                    <a href={`#/mascotas/${c.mascota_id}`}>{c.mascotas?.nombre}</a>
+                    <div className="pequeno suave">{c.mascotas?.duenos?.nombre}</div>
+                    <div className="pequeno suave">
+                      {c.rama} · {c.duracion_min} min
+                      {c.motivo && ` · ${c.motivo}`}
+                    </div>
+                    {/* El estado va solo en el select: el chip de al lado decía
+                        exactamente lo mismo y en 8.5rem no sobra ni una línea.
+                        El color queda en el borde izquierdo de la tarjeta. */}
+                    <select
+                      className="agenda-estado"
+                      aria-label={`Estado de la cita de ${c.mascotas?.nombre}`}
+                      value={c.estado}
+                      onChange={(e) => cambiarEstado(c.id, e.target.value)}
+                    >
+                      {ESTADOS.map((e) => (
+                        <option key={e} value={e}>
+                          {e.replace('_', ' ')}
+                        </option>
+                      ))}
+                    </select>
                   </article>
                 ))
               )}
