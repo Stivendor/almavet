@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { Plus } from 'lucide-react'
 import { anularCobro, cajaDelDia, cobrosDelDia } from '../db.js'
 import { useAsync } from '../useAsync.js'
-import { Chip, Estado } from '../ui.jsx'
+import { Chip, Dialogo, Estado } from '../ui.jsx'
+import { avisar } from '../avisos.js'
+import { BuscadorMascota, FormCobro } from './formularios.jsx'
 import { dinero, fechaLarga, totalCobro } from '../formato.js'
 import { hoyISO } from '../../whatsapp.js'
 
@@ -13,11 +16,23 @@ export default function Caja() {
   )
   const [cobros, porMetodo] = datos ?? [[], []]
   const total = porMetodo.reduce((t, f) => t + f.total_cop, 0)
+  const [cobrando, setCobrando] = useState(false)
+  const [mascota, setMascota] = useState(null)
+
+  const cerrarCobro = () => {
+    setCobrando(false)
+    setMascota(null)
+  }
 
   return (
     <>
       <div className="cabecera-vista">
         <h1>Caja</h1>
+        {/* "Caja" es donde cualquiera va a cobrar: el botón tiene que estar aquí,
+            no enterrado en la pestaña Cobros de la ficha (también sigue allá). */}
+        <button className="boton boton-mini" type="button" onClick={() => setCobrando(true)}>
+          <Plus size={15} aria-hidden="true" /> Nuevo cobro
+        </button>
         <input
           type="date"
           aria-label="Día"
@@ -27,6 +42,29 @@ export default function Caja() {
         />
         <span className="suave">{fechaLarga(fecha)}</span>
       </div>
+
+      {cobrando && (
+        <Dialogo
+          titulo={mascota ? `Cobro de ${mascota.nombre}` : 'Nuevo cobro'}
+          onCerrar={cerrarCobro}
+        >
+          {!mascota ? (
+            <BuscadorMascota elegida={null} alElegir={setMascota} />
+          ) : (
+            <>
+              <BuscadorMascota elegida={mascota} alElegir={setMascota} />
+              <FormCobro
+                mascota={mascota}
+                onCancelar={cerrarCobro}
+                alListo={() => {
+                  cerrarCobro()
+                  recargar()
+                }}
+              />
+            </>
+          )}
+        </Dialogo>
+      )}
 
       <Estado cargando={cargando} error={error}>
         <>
@@ -84,6 +122,7 @@ export default function Caja() {
                             type="button"
                             onClick={async () => {
                               await anularCobro(c.id)
+                              avisar('Cobro anulado')
                               recargar()
                             }}
                           >

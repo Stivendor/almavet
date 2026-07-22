@@ -3,6 +3,7 @@ import { CalendarPlus, MessageCircle } from 'lucide-react'
 import { actualizarSolicitud, convertirSolicitud, solicitudes } from '../db.js'
 import { useAsync } from '../useAsync.js'
 import { Campo, Chip, Dialogo, ErrorLinea, Estado } from '../ui.jsx'
+import { avisar } from '../avisos.js'
 import { useGuardado } from '../useGuardado.js'
 import { fechaLarga } from '../formato.js'
 import { enlaceWhatsAppA, formatoTelefono, hoyISO } from '../../whatsapp.js'
@@ -42,6 +43,7 @@ export default function Solicitudes() {
 
   const cambiarEstado = async (id, estado) => {
     await actualizarSolicitud(id, { estado })
+    avisar(`Solicitud marcada como ${estado}`)
     recargar()
   }
 
@@ -183,6 +185,7 @@ function DialogoConvertir({ s, onCerrar, onListo }) {
       Number(duracion),
       especie,
     )
+    avisar(`Ficha y cita de ${s.nombre_mascota} creadas`)
     onListo()
     ir(`/mascotas/${r.mascota_id}`)
   })

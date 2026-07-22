@@ -62,6 +62,45 @@ export const borrarDueno = (id) => sb.from('duenos').delete().eq('id', id).then(
 export const mascota = (id) =>
   sb.from('mascotas').select('*, duenos(*)').eq('id', id).single().then(ok)
 
+// La gente llega diciendo "vengo con Luna", no con el nombre del dueño.
+export const mascotasPorNombre = (texto) =>
+  sb
+    .from('mascotas')
+    .select('*, duenos(id, nombre, telefono)')
+    .ilike('nombre', `%${texto.trim()}%`)
+    .eq('activo', true)
+    .limit(20)
+    .then(ok)
+
+// Para elegir paciente al crear una cita o un cobro: acepta nombre de mascota
+// O nombre de dueño. PostgREST no hace `or` entre tabla y tabla embebida, así
+// que son dos consultas en paralelo y se quitan los repetidos.
+export async function buscarMascotas(texto) {
+  const q = `%${texto.trim()}%`
+  const [porMascota, porDueno] = await Promise.all([
+    sb
+      .from('mascotas')
+      .select('*, duenos(id, nombre, telefono)')
+      .ilike('nombre', q)
+      .eq('activo', true)
+      .limit(20),
+    sb
+      .from('mascotas')
+      .select('*, duenos!inner(id, nombre, telefono)')
+      .ilike('duenos.nombre', q)
+      .eq('activo', true)
+      .limit(20),
+  ])
+  if (porMascota.error) throw new Error(porMascota.error.message)
+  if (porDueno.error) throw new Error(porDueno.error.message)
+  const vistos = new Set()
+  return [...porMascota.data, ...porDueno.data].filter((m) => {
+    if (vistos.has(m.id)) return false
+    vistos.add(m.id)
+    return true
+  })
+}
+
 export const crearMascota = (datos) => sb.from('mascotas').insert(datos).select().single().then(ok)
 
 export const guardarMascota = (id, cambios) =>

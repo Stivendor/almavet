@@ -289,13 +289,15 @@ th.numero {
   white-space: nowrap;
 }
 
-.agenda-cal {
+.agenda-fila .agenda-icono:first-of-type {
   margin-left: auto;
+}
+.agenda-icono {
   color: var(--texto-suave);
   line-height: 0;
   padding: 0.2rem;
 }
-.agenda-cal:hover {
+.agenda-icono:hover {
   color: var(--primario);
 }
 
@@ -556,6 +558,92 @@ dialog::backdrop {
   border-color: #f5c2c2;
   background: #fdeaea;
   color: #8c1a1f;
+}
+
+/* Confirmaciones de guardado. Abajo al centro, fuera del camino del cursor. */
+.avisos {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.aviso-flotante {
+  background: var(--primario-oscuro);
+  color: #fff;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  box-shadow: var(--sombra-alta);
+  font-size: 0.88rem;
+  animation: aviso-entra 0.18s ease-out;
+}
+
+@keyframes aviso-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* ---------- Tarjetas clicables (tablero, resultados) ---------- */
+.tarjeta-boton {
+  display: block;
+  text-decoration: none;
+  transition:
+    border-color 0.12s,
+    box-shadow 0.12s;
+}
+.tarjeta-boton:hover {
+  border-color: var(--secundario);
+  box-shadow: var(--sombra);
+}
+
+/* ---------- Buscador de mascota ---------- */
+.buscador-lista {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: 14rem;
+  overflow-y: auto;
+}
+.buscador-lista li + li {
+  border-top: 1px solid var(--borde);
+}
+.buscador-lista button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: var(--superficie);
+  font: inherit;
+  color: inherit;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+}
+.buscador-lista button:hover {
+  background: var(--fondo);
+}
+
+.buscador-elegida {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: var(--fondo);
+  padding: 0.5rem 0.7rem;
+  margin-bottom: 0.75rem;
 }
 
 /* ---------- Login ---------- */

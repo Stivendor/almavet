@@ -4,20 +4,19 @@ import {
   anularCobro,
   citasDeMascota,
   cobrosDeMascota,
-  crearCobro,
   crearPreventivo,
   crearVisita,
   guardarMascota,
   guardarVisita,
   mascota as leerMascota,
   preventivos as leerPreventivos,
-  procedimientos as leerProcedimientos,
   visitas as leerVisitas,
 } from '../db.js'
 import { useAsync } from '../useAsync.js'
 import { Campo, Chip, Dialogo, ErrorLinea, Estado } from '../ui.jsx'
+import { avisar } from '../avisos.js'
 import { useGuardado } from '../useGuardado.js'
-import { FormMascota } from './formularios.jsx'
+import { DialogoCita, FormCobro, FormMascota, FormVisita } from './formularios.jsx'
 import { citaACalendario, dinero, edad, fechaLarga, hora, totalCobro } from '../formato.js'
 import { enlaceWhatsAppA, formatoTelefono, hoyISO } from '../../whatsapp.js'
 import { clinica } from '../../config.js'
@@ -124,6 +123,7 @@ export default function FichaMascota({ id }) {
                 onCancelar={() => setEditando(false)}
                 alGuardar={async (datos) => {
                   await guardarMascota(m.id, datos)
+                  avisar('Ficha actualizada')
                   setEditando(false)
                   recargar()
                 }}
@@ -137,8 +137,6 @@ export default function FichaMascota({ id }) {
 }
 
 // ------------------------------------------------------------------ historial
-const TIPOS_VISITA = ['consulta', 'vacunación', 'cirugía', 'urgencia', 'control', 'estética']
-
 function Historial({ mascotaId }) {
   const { datos, cargando, error, recargar } = useAsync(() => leerVisitas(mascotaId), [mascotaId])
   const [editando, setEditando] = useState(null) // null | 'nueva' | visita
@@ -198,6 +196,7 @@ function Historial({ mascotaId }) {
             alGuardar={async (datos) => {
               if (editando === 'nueva') await crearVisita({ ...datos, mascota_id: mascotaId })
               else await guardarVisita(editando.id, datos)
+              avisar(editando === 'nueva' ? 'Visita registrada' : 'Visita actualizada')
               setEditando(null)
               recargar()
             }}
@@ -215,106 +214,6 @@ const Linea = ({ etiqueta, texto }) =>
       {texto}
     </p>
   ) : null
-
-function FormVisita({ inicial = {}, alGuardar, onCancelar }) {
-  const [f, setF] = useState({
-    fecha: inicial.fecha ?? hoyISO(),
-    tipo: inicial.tipo ?? 'consulta',
-    peso_kg: inicial.peso_kg ?? '',
-    temperatura_c: inicial.temperatura_c ?? '',
-    anamnesis: inicial.anamnesis ?? '',
-    examen_fisico: inicial.examen_fisico ?? '',
-    diagnostico: inicial.diagnostico ?? '',
-    tratamiento: inicial.tratamiento ?? '',
-    observaciones: inicial.observaciones ?? '',
-    veterinario: inicial.veterinario ?? '',
-  })
-  const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
-
-  const { enviar, guardando, error } = useGuardado(() =>
-    alGuardar({
-      ...f,
-      // Los CHECK numéricos rechazan '': el campo vacío es null, no cero.
-      peso_kg: f.peso_kg === '' ? null : Number(f.peso_kg),
-      temperatura_c: f.temperatura_c === '' ? null : Number(f.temperatura_c),
-      anamnesis: f.anamnesis || null,
-      examen_fisico: f.examen_fisico || null,
-      diagnostico: f.diagnostico || null,
-      tratamiento: f.tratamiento || null,
-      observaciones: f.observaciones || null,
-      veterinario: f.veterinario || null,
-    }),
-  )
-
-  return (
-    <form onSubmit={enviar}>
-      <div className="fila">
-        <Campo id="v-fecha" etiqueta="Fecha">
-          <input id="v-fecha" type="date" required value={f.fecha} onChange={set('fecha')} />
-        </Campo>
-        <Campo id="v-tipo" etiqueta="Tipo">
-          <select id="v-tipo" value={f.tipo} onChange={set('tipo')}>
-            {TIPOS_VISITA.map((t) => (
-              <option key={t}>{t}</option>
-            ))}
-          </select>
-        </Campo>
-        <Campo id="v-peso" etiqueta="Peso (kg)">
-          <input
-            id="v-peso"
-            type="number"
-            step="0.01"
-            min="0.01"
-            value={f.peso_kg}
-            onChange={set('peso_kg')}
-          />
-        </Campo>
-        <Campo id="v-temp" etiqueta="Temp. (°C)">
-          <input
-            id="v-temp"
-            type="number"
-            step="0.1"
-            min="30"
-            max="45"
-            value={f.temperatura_c}
-            onChange={set('temperatura_c')}
-          />
-        </Campo>
-      </div>
-
-      <Campo id="v-anamnesis" etiqueta="Motivo / anamnesis">
-        <textarea id="v-anamnesis" value={f.anamnesis} onChange={set('anamnesis')} />
-      </Campo>
-      <Campo id="v-examen" etiqueta="Examen físico">
-        <textarea id="v-examen" value={f.examen_fisico} onChange={set('examen_fisico')} />
-      </Campo>
-      <Campo id="v-diagnostico" etiqueta="Diagnóstico">
-        <textarea id="v-diagnostico" value={f.diagnostico} onChange={set('diagnostico')} />
-      </Campo>
-      <Campo id="v-tratamiento" etiqueta="Tratamiento">
-        <textarea id="v-tratamiento" value={f.tratamiento} onChange={set('tratamiento')} />
-      </Campo>
-      <div className="fila">
-        <Campo id="v-obs" etiqueta="Observaciones">
-          <input id="v-obs" value={f.observaciones} onChange={set('observaciones')} />
-        </Campo>
-        <Campo id="v-vet" etiqueta="Atendió">
-          <input id="v-vet" value={f.veterinario} onChange={set('veterinario')} />
-        </Campo>
-      </div>
-
-      <ErrorLinea error={error} />
-      <div className="acciones">
-        <button className="boton" disabled={guardando}>
-          {guardando ? 'Guardando…' : 'Guardar visita'}
-        </button>
-        <button className="boton boton-suave" type="button" onClick={onCancelar}>
-          Cancelar
-        </button>
-      </div>
-    </form>
-  )
-}
 
 // ------------------------------------------------------------------ preventivos
 function Preventivos({ mascotaId }) {
@@ -381,6 +280,7 @@ function Preventivos({ mascotaId }) {
             onCancelar={() => setCreando(false)}
             alGuardar={async (datos) => {
               await crearPreventivo({ ...datos, mascota_id: mascotaId })
+              avisar('Aplicación registrada')
               setCreando(false)
               recargar()
             }}
@@ -554,6 +454,7 @@ function Cobros({ mascota }) {
                     type="button"
                     onClick={async () => {
                       await anularCobro(c.id)
+                      avisar('Cobro anulado')
                       recargar()
                     }}
                   >
@@ -588,151 +489,31 @@ function Cobros({ mascota }) {
   )
 }
 
-function FormCobro({ mascota, alListo, onCancelar }) {
-  const { datos: catalogo } = useAsync(() => leerProcedimientos(true), [])
-  const [items, setItems] = useState([])
-  const [metodo, setMetodo] = useState('efectivo')
-  const [fecha, setFecha] = useState(hoyISO())
-  const [notas, setNotas] = useState('')
-
-  const anadir = (id) => {
-    const p = catalogo?.find((x) => x.id === id)
-    if (!p) return
-    setItems([
-      ...items,
-      {
-        procedimiento_id: p.id,
-        descripcion: p.nombre,
-        cantidad: 1,
-        precio_unit_cop: p.precio_cop,
-      },
-    ])
-  }
-
-  const cambiar = (i, campo, valor) =>
-    setItems(items.map((it, j) => (i === j ? { ...it, [campo]: Number(valor) } : it)))
-
-  const total = items.reduce((t, i) => t + i.cantidad * i.precio_unit_cop, 0)
-
-  const { enviar, guardando, error } = useGuardado(async () => {
-    if (items.length === 0) throw new Error('Añade al menos un servicio')
-    await crearCobro({ mascota_id: mascota.id, fecha, metodo, estado: 'pagado', notas }, items)
-    alListo()
-  })
-
-  return (
-    <form onSubmit={enviar}>
-      <Campo id="c-anadir" etiqueta="Añadir servicio">
-        <select id="c-anadir" value="" onChange={(e) => anadir(e.target.value)}>
-          <option value="">Selecciona del catálogo…</option>
-          {catalogo?.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.nombre} — {dinero(p.precio_cop)}
-            </option>
-          ))}
-        </select>
-      </Campo>
-
-      {items.length > 0 && (
-        <div className="tabla-marco" style={{ marginBottom: '0.75rem' }}>
-          <table>
-            <thead>
-              <tr>
-                <th>Servicio</th>
-                <th className="numero">Cant.</th>
-                <th className="numero">Precio</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((i, idx) => (
-                <tr key={idx}>
-                  <td>{i.descripcion}</td>
-                  <td className="numero">
-                    <input
-                      type="number"
-                      min="1"
-                      aria-label={`Cantidad de ${i.descripcion}`}
-                      value={i.cantidad}
-                      onChange={(e) => cambiar(idx, 'cantidad', e.target.value)}
-                      style={{ width: '4.5rem' }}
-                    />
-                  </td>
-                  <td className="numero">
-                    {/* El precio del catálogo es el sugerido: los descuentos y los
-                        casos raros se ajustan aquí, no editando la lista de precios. */}
-                    <input
-                      type="number"
-                      min="0"
-                      step="500"
-                      aria-label={`Precio de ${i.descripcion}`}
-                      value={i.precio_unit_cop}
-                      onChange={(e) => cambiar(idx, 'precio_unit_cop', e.target.value)}
-                      style={{ width: '7rem' }}
-                    />
-                  </td>
-                  <td>
-                    <button
-                      className="boton boton-mini boton-peligro"
-                      type="button"
-                      aria-label={`Quitar ${i.descripcion}`}
-                      onClick={() => setItems(items.filter((_, j) => j !== idx))}
-                    >
-                      <Trash2 size={13} aria-hidden="true" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              <tr>
-                <td colSpan="2">
-                  <strong>Total</strong>
-                </td>
-                <td className="numero">
-                  <strong>{dinero(total)}</strong>
-                </td>
-                <td />
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <div className="fila">
-        <Campo id="c-fecha" etiqueta="Fecha">
-          <input id="c-fecha" type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} />
-        </Campo>
-        <Campo id="c-metodo" etiqueta="Método de pago">
-          <select id="c-metodo" value={metodo} onChange={(e) => setMetodo(e.target.value)}>
-            <option value="efectivo">efectivo</option>
-            <option value="transferencia">transferencia</option>
-            <option value="tarjeta">tarjeta</option>
-            <option value="otro">otro</option>
-          </select>
-        </Campo>
-      </div>
-      <Campo id="c-notas" etiqueta="Notas">
-        <input id="c-notas" value={notas} onChange={(e) => setNotas(e.target.value)} />
-      </Campo>
-
-      <ErrorLinea error={error} />
-      <div className="acciones">
-        <button className="boton" disabled={guardando}>
-          {guardando ? 'Guardando…' : `Cobrar ${dinero(total)}`}
-        </button>
-        <button className="boton boton-suave" type="button" onClick={onCancelar}>
-          Cancelar
-        </button>
-      </div>
-    </form>
-  )
-}
-
 // ------------------------------------------------------------------ citas
 function Citas({ mascota }) {
-  const { datos, cargando, error } = useAsync(() => citasDeMascota(mascota.id), [mascota.id])
+  const { datos, cargando, error, recargar } = useAsync(() => citasDeMascota(mascota.id), [mascota.id])
+  const [creando, setCreando] = useState(false)
 
   return (
-    <Estado cargando={cargando} error={error}>
+    <>
+      <div className="acciones" style={{ marginBottom: '0.75rem' }}>
+        <button className="boton boton-mini" type="button" onClick={() => setCreando(true)}>
+          <Plus size={14} aria-hidden="true" /> Nueva cita
+        </button>
+      </div>
+
+      {creando && (
+        <DialogoCita
+          mascotaFija={mascota}
+          onCerrar={() => setCreando(false)}
+          onListo={() => {
+            setCreando(false)
+            recargar()
+          }}
+        />
+      )}
+
+      <Estado cargando={cargando} error={error}>
       {datos?.length === 0 ? (
         <p className="aviso">Sin citas registradas.</p>
       ) : (
@@ -774,6 +555,7 @@ function Citas({ mascota }) {
           </table>
         </div>
       )}
-    </Estado>
+      </Estado>
+    </>
   )
 }

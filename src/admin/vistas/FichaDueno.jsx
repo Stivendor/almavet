@@ -69,12 +69,7 @@ export default function FichaDueno({ id }) {
           {d.mascotas?.length ? (
             <div className="rejilla">
               {d.mascotas.map((m) => (
-                <a
-                  key={m.id}
-                  className="tarjeta"
-                  href={`#/mascotas/${m.id}`}
-                  style={{ textDecoration: 'none' }}
-                >
+                <a key={m.id} className="tarjeta tarjeta-boton" href={`#/mascotas/${m.id}`}>
                   <strong>{m.nombre}</strong>
                   <div className="pequeno suave">
                     {[m.especie, m.raza, edad(m.fecha_nacimiento)].filter(Boolean).join(' · ')}

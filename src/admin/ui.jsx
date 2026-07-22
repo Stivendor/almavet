@@ -1,5 +1,33 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
+
+// ---------------------------------------------------------------- avisos
+// Muestra las confirmaciones que dispara avisar() (avisos.js). Sin esto la
+// única señal de guardado era que la lista se recargaba, y la gente le daba
+// dos veces al botón por la duda.
+export function Avisos() {
+  const [lista, setLista] = useState([])
+
+  useEffect(() => {
+    const alAviso = (e) => {
+      const id = crypto.randomUUID()
+      setLista((l) => [...l, { id, texto: e.detail }])
+      setTimeout(() => setLista((l) => l.filter((a) => a.id !== id)), 3500)
+    }
+    window.addEventListener('aviso', alAviso)
+    return () => window.removeEventListener('aviso', alAviso)
+  }, [])
+
+  return (
+    <div className="avisos" role="status" aria-live="polite">
+      {lista.map((a) => (
+        <div className="aviso-flotante" key={a.id}>
+          {a.texto}
+        </div>
+      ))}
+    </div>
+  )
+}
 
 // Envuelve el resultado de useAsync: mientras carga o si falló, no se pinta la
 // vista a medias. Cada pantalla se queda con su caso de éxito y nada más.

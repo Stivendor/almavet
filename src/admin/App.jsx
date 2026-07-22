@@ -13,7 +13,7 @@ import { configurado, sb } from './cliente.js'
 import { perfil } from './db.js'
 import { resolver, useRuta } from './router.js'
 import { useAsync } from './useAsync.js'
-import { Estado } from './ui.jsx'
+import { Avisos, Estado } from './ui.jsx'
 import Login from './Login.jsx'
 import Hoy from './vistas/Hoy.jsx'
 import Solicitudes from './vistas/Solicitudes.jsx'
@@ -133,6 +133,8 @@ function Panel({ sesion }) {
           )}
         </Estado>
       </main>
+
+      <Avisos />
     </>
   )
 }

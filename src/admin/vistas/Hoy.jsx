@@ -19,19 +19,19 @@ export default function Hoy() {
           </div>
 
           <div className="rejilla">
-            <a className="tarjeta" href="#/solicitudes" style={{ textDecoration: 'none' }}>
+            <a className="tarjeta tarjeta-boton" href="#/solicitudes">
               <span className="cifra">{datos.solicitudesNuevas}</span>
               <span className="etiqueta">solicitudes sin atender</span>
             </a>
-            <a className="tarjeta" href="#/agenda" style={{ textDecoration: 'none' }}>
+            <a className="tarjeta tarjeta-boton" href="#/agenda">
               <span className="cifra">{datos.citasHoy.length}</span>
               <span className="etiqueta">citas hoy</span>
             </a>
-            <a className="tarjeta" href="#/recordatorios" style={{ textDecoration: 'none' }}>
+            <a className="tarjeta tarjeta-boton" href="#/recordatorios">
               <span className="cifra">{datos.recordatorios}</span>
               <span className="etiqueta">refuerzos por avisar</span>
             </a>
-            <a className="tarjeta" href="#/caja" style={{ textDecoration: 'none' }}>
+            <a className="tarjeta tarjeta-boton" href="#/caja">
               <span className="cifra">{dinero(datos.cajaHoy)}</span>
               <span className="etiqueta">cobrado hoy</span>
             </a>
