@@ -3,21 +3,24 @@ import { CalendarPlus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { citas as leerCitas, guardarCita } from '../db.js'
 import { useAsync } from '../useAsync.js'
 import { Chip, Estado } from '../ui.jsx'
-import { agruparPorHora, citaACalendario, fechaLarga, lunes, rango } from '../formato.js'
+import {
+  citaACalendario,
+  diaCorto,
+  diasDelRango,
+  fechaLarga,
+  hora,
+  lunes,
+  rango,
+  sumarDias,
+} from '../formato.js'
 import { hoyISO } from '../../whatsapp.js'
 
 const ESTADOS = ['agendada', 'confirmada', 'atendida', 'no_asistio', 'cancelada']
 
-const sumarDias = (iso, n) => {
-  const d = new Date(`${iso}T00:00:00`)
-  d.setDate(d.getDate() + n)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-// Lista agrupada por hora, no rejilla de calendario: con dos ramas y horario de
-// 10 a 19 la rejilla es más código y se lee peor en el móvil del mostrador.
+// Una columna por día. En semana son siete columnas con scroll horizontal en
+// móvil: apilarlas obliga a bajar hasta el jueves para saber si hay algo el jueves.
 export default function Agenda() {
-  const [vista, setVista] = useState('dia')
+  const [vista, setVista] = useState('semana')
   const [dia, setDia] = useState(hoyISO())
 
   const dias = vista === 'dia' ? 1 : 7
@@ -30,13 +33,17 @@ export default function Agenda() {
     recargar()
   }
 
-  // Un día por bloque, tanto en vista de día como de semana.
-  const porDia = new Map()
+  // La cita se reparte por su día local, no por el UTC del timestamp.
+  const porDia = new Map(diasDelRango(desde, dias).map((f) => [f, []]))
   for (const c of datos ?? []) {
     const clave = new Date(c.fecha_hora).toLocaleDateString('sv')
-    if (!porDia.has(clave)) porDia.set(clave, [])
-    porDia.get(clave).push(c)
+    porDia.get(clave)?.push(c)
   }
+  for (const lista of porDia.values()) {
+    lista.sort((a, b) => a.fecha_hora.localeCompare(b.fecha_hora))
+  }
+
+  const hoy = hoyISO()
 
   return (
     <>
@@ -46,7 +53,7 @@ export default function Agenda() {
           <button
             className="boton boton-mini boton-suave"
             type="button"
-            aria-label="Anterior"
+            aria-label={vista === 'dia' ? 'Día anterior' : 'Semana anterior'}
             onClick={() => setDia(sumarDias(dia, -dias))}
           >
             <ChevronLeft size={15} aria-hidden="true" />
@@ -61,12 +68,16 @@ export default function Agenda() {
           <button
             className="boton boton-mini boton-suave"
             type="button"
-            aria-label="Siguiente"
+            aria-label={vista === 'dia' ? 'Día siguiente' : 'Semana siguiente'}
             onClick={() => setDia(sumarDias(dia, dias))}
           >
             <ChevronRight size={15} aria-hidden="true" />
           </button>
-          <button className="boton boton-mini boton-suave" type="button" onClick={() => setDia(hoyISO())}>
+          <button
+            className="boton boton-mini boton-suave"
+            type="button"
+            onClick={() => setDia(hoyISO())}
+          >
             Hoy
           </button>
           <select
@@ -81,28 +92,44 @@ export default function Agenda() {
         </div>
       </div>
 
+      <p className="suave pequeno">
+        {vista === 'dia'
+          ? fechaLarga(desde)
+          : `Del ${fechaLarga(desde)} al ${fechaLarga(sumarDias(desde, 6))}`}
+      </p>
+
       <Estado cargando={cargando} error={error}>
-        {datos?.length === 0 ? (
-          <p className="aviso">No hay citas en este rango.</p>
-        ) : (
-          [...porDia].map(([fecha, citasDelDia]) => (
-            <section key={fecha} style={{ marginBottom: '1.5rem' }}>
-              <h2>{fechaLarga(fecha)}</h2>
-              {agruparPorHora(citasDelDia).map(([franja, enEsaHora]) => (
-                <div className="tarjeta" key={franja}>
-                  <h3>{franja}</h3>
-                  {enEsaHora.map((c) => (
-                    <div className="cabecera-vista" key={c.id} style={{ marginBottom: '0.35rem' }}>
-                      <a href={`#/mascotas/${c.mascota_id}`}>{c.mascotas?.nombre}</a>
-                      <span className="suave pequeno">
-                        {c.mascotas?.duenos?.nombre} · {c.rama} · {c.duracion_min} min
-                        {c.motivo && ` · ${c.motivo}`}
-                      </span>
+        <div className={`agenda${vista === 'dia' ? ' agenda-dia' : ''}`}>
+          {[...porDia].map(([fecha, citasDelDia]) => (
+            <section className={`agenda-col${fecha === hoy ? ' es-hoy' : ''}`} key={fecha}>
+              <h2 className="agenda-cabecera">
+                {diaCorto(fecha)}
+                {citasDelDia.length > 0 && (
+                  <span className="agenda-conteo">{citasDelDia.length}</span>
+                )}
+              </h2>
+
+              {citasDelDia.length === 0 ? (
+                <p className="agenda-vacio">Sin citas</p>
+              ) : (
+                citasDelDia.map((c) => (
+                  <article className="agenda-cita" key={c.id}>
+                    <div className="agenda-hora">
+                      {hora(c.fecha_hora)}
+                      <span className="suave"> · {c.duracion_min} min</span>
+                    </div>
+                    <a href={`#/mascotas/${c.mascota_id}`}>{c.mascotas?.nombre}</a>
+                    <div className="pequeno suave">{c.mascotas?.duenos?.nombre}</div>
+                    <div className="pequeno suave">
+                      {c.rama}
+                      {c.motivo && ` · ${c.motivo}`}
+                    </div>
+                    <Chip valor={c.estado} />
+                    <div className="agenda-acciones">
                       <select
                         aria-label={`Estado de la cita de ${c.mascotas?.nombre}`}
                         value={c.estado}
                         onChange={(e) => cambiarEstado(c.id, e.target.value)}
-                        style={{ width: 'auto' }}
                       >
                         {ESTADOS.map((e) => (
                           <option key={e} value={e}>
@@ -110,7 +137,6 @@ export default function Agenda() {
                           </option>
                         ))}
                       </select>
-                      <Chip valor={c.estado} />
                       <a
                         className="boton boton-mini boton-suave"
                         href={citaACalendario(c, c.mascotas?.nombre, c.mascotas?.duenos?.nombre)}
@@ -119,15 +145,14 @@ export default function Agenda() {
                         title="Añadir a Google Calendar"
                       >
                         <CalendarPlus size={13} aria-hidden="true" />
-                        <span className="pequeno">Calendar</span>
                       </a>
                     </div>
-                  ))}
-                </div>
-              ))}
+                  </article>
+                ))
+              )}
             </section>
-          ))
-        )}
+          ))}
+        </div>
       </Estado>
     </>
   )

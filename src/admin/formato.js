@@ -115,9 +115,33 @@ export const citaACalendario = (cita, mascota, dueno) =>
       .join('\n'),
   })
 
-// Lunes de la semana que contiene la fecha dada.
-export function lunes(iso) {
-  const d = new Date(`${iso}T00:00:00`)
-  d.setDate(d.getDate() - ((d.getDay() + 6) % 7))
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+// 'YYYY-MM-DD' desde un Date local. No vale toISOString(): eso pasa por UTC y en
+// Colombia devuelve el día anterior para cualquier hora antes de las 7 p. m.
+const iso = (d) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+
+export function sumarDias(desde, n) {
+  const d = new Date(`${desde}T00:00:00`)
+  d.setDate(d.getDate() + n)
+  return iso(d)
 }
+
+// Lunes de la semana que contiene la fecha dada.
+export function lunes(fecha) {
+  const d = new Date(`${fecha}T00:00:00`)
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7))
+  return iso(d)
+}
+
+// Las columnas de la agenda: ['2026-03-02', '2026-03-03', ...].
+export const diasDelRango = (desde, n) => Array.from({ length: n }, (_, i) => sumarDias(desde, i))
+
+const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
+
+// Índice fijo en vez de toLocaleDateString: el nombre del día no debe depender
+// de qué locales tenga instalados el navegador que abra el panel.
+export const diaSemana = (fecha) => DIAS[new Date(`${fecha}T00:00:00`).getDay()]
+
+// Cabecera de columna: 'mié 4'.
+export const diaCorto = (fecha) =>
+  `${diaSemana(fecha).slice(0, 3)} ${Number(fecha.split('-')[2])}`

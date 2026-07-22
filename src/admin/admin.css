@@ -200,6 +200,95 @@ th.numero {
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------- Agenda por columnas ---------- */
+/* Ancho fijo por columna y scroll horizontal: siete columnas elásticas en un
+   móvil dejan cada día en 45 px, que no alcanza ni para el nombre de la mascota. */
+.agenda {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(11rem, 1fr);
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  align-items: start;
+}
+
+/* Un solo día no necesita scroll ni columnas estrechas. */
+.agenda-dia {
+  grid-auto-columns: 1fr;
+  overflow-x: visible;
+}
+
+.agenda-col {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 0.5rem;
+}
+
+.agenda-col.es-hoy {
+  border-color: var(--secundario);
+  box-shadow: inset 0 2px 0 var(--secundario);
+}
+
+.agenda-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  margin: 0 0 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--borde);
+  position: sticky;
+  top: 0;
+  background: var(--superficie);
+}
+
+.agenda-conteo {
+  margin-left: auto;
+  background: var(--fondo);
+  border-radius: 999px;
+  padding: 0 0.45rem;
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+}
+
+.agenda-vacio {
+  color: var(--neutro);
+  font-size: 0.82rem;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.agenda-cita {
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--secundario);
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: var(--fondo);
+}
+.agenda-cita:last-child {
+  margin-bottom: 0;
+}
+
+.agenda-hora {
+  font-weight: 600;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.agenda-acciones {
+  display: flex;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+.agenda-acciones select {
+  font-size: 0.78rem;
+  padding: 0.2rem 0.3rem;
+}
+
 /* ---------- Chips de estado ---------- */
 .chip {
   display: inline-block;

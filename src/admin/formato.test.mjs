@@ -3,11 +3,15 @@ import assert from 'node:assert/strict'
 import {
   agruparPorHora,
   citaACalendario,
+  diaCorto,
+  diaSemana,
+  diasDelRango,
   edad,
   enlaceCalendario,
   fechaLarga,
   lunes,
   rango,
+  sumarDias,
   totalCobro,
 } from './formato.js'
 
@@ -62,6 +66,27 @@ assert.deepEqual(citas.map((c) => c.id), ['c', 'a', 'b'], 'no reordena el array 
 assert.equal(lunes('2026-03-04'), '2026-03-02')
 assert.equal(lunes('2026-03-02'), '2026-03-02', 'un lunes es su propio lunes')
 assert.equal(lunes('2026-03-08'), '2026-03-02', 'el domingo cierra la semana, no la abre')
+
+// Columnas de la agenda. El 2 de marzo de 2026 es lunes.
+assert.deepEqual(diasDelRango('2026-03-02', 7), [
+  '2026-03-02',
+  '2026-03-03',
+  '2026-03-04',
+  '2026-03-05',
+  '2026-03-06',
+  '2026-03-07',
+  '2026-03-08',
+])
+assert.deepEqual(diasDelRango('2026-03-04', 1), ['2026-03-04'])
+// Cruce de mes y de año.
+assert.deepEqual(diasDelRango('2026-02-27', 3), ['2026-02-27', '2026-02-28', '2026-03-01'])
+assert.equal(sumarDias('2026-12-31', 1), '2027-01-01')
+assert.equal(sumarDias('2026-03-02', -7), '2026-02-23')
+
+assert.equal(diaSemana('2026-03-02'), 'lunes')
+assert.equal(diaSemana('2026-03-08'), 'domingo')
+assert.equal(diaCorto('2026-03-04'), 'mié 4')
+assert.equal(diaCorto('2026-03-31'), 'mar 31')
 
 // El rango cubre exactamente los días pedidos, sin importar la zona horaria.
 const [desde, hasta] = rango('2026-03-04', 7)
