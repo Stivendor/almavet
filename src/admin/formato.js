@@ -129,7 +129,3 @@ const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', '
 // Índice fijo en vez de toLocaleDateString: el nombre del día no debe depender
 // de qué locales tenga instalados el navegador que abra el panel.
 export const diaSemana = (fecha) => DIAS[new Date(`${fecha}T00:00:00`).getDay()]
-
-// Cabecera de columna: 'mié 4'.
-export const diaCorto = (fecha) =>
-  `${diaSemana(fecha).slice(0, 3)} ${Number(fecha.split('-')[2])}`

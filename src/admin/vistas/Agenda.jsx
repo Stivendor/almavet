@@ -5,10 +5,11 @@ import { useAsync } from '../useAsync.js'
 import { Estado } from '../ui.jsx'
 import { DialogoCita } from './formularios.jsx'
 import { TarjetaCita } from './TarjetaCita.jsx'
-import { diaCorto, diasDelRango, fechaLarga, lunes, rango, sumarDias } from '../formato.js'
+import { diaSemana, diasDelRango, fechaLarga, lunes, rango, sumarDias } from '../formato.js'
 import { hoyISO } from '../../whatsapp.js'
 
-// Una columna por día. En semana son siete columnas que se envuelven si no caben.
+// Una fila por día, de arriba hacia abajo: se lee como se lee el día, en orden.
+// Dentro de cada día las tarjetas fluyen en rejilla.
 export default function Agenda() {
   const [vista, setVista] = useState('semana')
   const [dia, setDia] = useState(hoyISO())
@@ -88,24 +89,27 @@ export default function Agenda() {
       </p>
 
       <Estado cargando={cargando} error={error}>
-        <div className={`agenda${vista === 'dia' ? ' agenda-dia' : ''}`}>
-          {[...porDia].map(([fecha, citasDelDia]) => (
-            <section className={`agenda-col${fecha === hoy ? ' es-hoy' : ''}`} key={fecha}>
-              <h2 className="agenda-cabecera">
-                {diaCorto(fecha)}
-                {citasDelDia.length > 0 && (
-                  <span className="agenda-conteo">{citasDelDia.length}</span>
-                )}
-              </h2>
-
-              {citasDelDia.length === 0 ? (
-                <p className="agenda-vacio">Sin citas</p>
-              ) : (
-                citasDelDia.map((c) => <TarjetaCita key={c.id} cita={c} alCambiar={recargar} />)
+        {[...porDia].map(([fecha, citasDelDia]) => (
+          <section className={`agenda-bloque${fecha === hoy ? ' es-hoy' : ''}`} key={fecha}>
+            <h2 className="agenda-cabecera">
+              {diaSemana(fecha)} {Number(fecha.split('-')[2])}
+              {fecha === hoy && <span className="chip chip-confirmada">hoy</span>}
+              {citasDelDia.length > 0 && (
+                <span className="agenda-conteo">{citasDelDia.length}</span>
               )}
-            </section>
-          ))}
-        </div>
+            </h2>
+
+            {citasDelDia.length === 0 ? (
+              <p className="agenda-vacio">Sin citas</p>
+            ) : (
+              <div className="rejilla-citas">
+                {citasDelDia.map((c) => (
+                  <TarjetaCita key={c.id} cita={c} alCambiar={recargar} />
+                ))}
+              </div>
+            )}
+          </section>
+        ))}
       </Estado>
 
       {creando && (

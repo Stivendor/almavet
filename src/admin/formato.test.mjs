@@ -2,7 +2,6 @@
 import assert from 'node:assert/strict'
 import {
   citaACalendario,
-  diaCorto,
   diaSemana,
   diasDelRango,
   edad,
@@ -66,8 +65,7 @@ assert.equal(sumarDias('2026-03-02', -7), '2026-02-23')
 
 assert.equal(diaSemana('2026-03-02'), 'lunes')
 assert.equal(diaSemana('2026-03-08'), 'domingo')
-assert.equal(diaCorto('2026-03-04'), 'mié 4')
-assert.equal(diaCorto('2026-03-31'), 'mar 31')
+assert.equal(diaSemana('2026-03-04'), 'miércoles')
 
 // El rango cubre exactamente los días pedidos, sin importar la zona horaria.
 const [desde, hasta] = rango('2026-03-04', 7)

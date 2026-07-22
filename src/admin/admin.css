@@ -270,57 +270,40 @@ th.numero {
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Agenda por columnas ---------- */
-/* Sin scroll horizontal: `auto-fit` mete los siete días en una fila mientras
-   quepan a 8.5rem, y cuando no caben baja los que sobran a una segunda fila.
-   Columnas elásticas puras dejarían cada día en 45 px en un móvil. */
-.agenda {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
-  gap: 0.5rem;
-  align-items: start;
+/* ---------- Agenda por filas ---------- */
+/* Un bloque por día, apilados: la semana se lee de arriba hacia abajo. Dentro
+   del bloque las tarjetas fluyen en .rejilla-citas, así que nada desborda. */
+.agenda-bloque {
+  border-top: 1px solid var(--borde);
+  padding: 0.6rem 0 1rem;
 }
 
-/* Un solo día ocupa el ancho completo. */
-.agenda-dia {
-  grid-template-columns: 1fr;
-}
-
-.agenda-col {
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
-  padding: 0.5rem;
-  /* Sin esto la columna se ensancha para caber un "Golden Retriever" de una sola
-     pieza y devuelve el scroll horizontal que acabamos de quitar. */
-  min-width: 0;
-}
-
-.agenda-col.es-hoy {
-  border-color: var(--secundario);
-  box-shadow: inset 0 2px 0 var(--secundario);
+.agenda-bloque.es-hoy .agenda-cabecera {
+  color: var(--secundario);
 }
 
 .agenda-cabecera {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.9rem;
+  gap: 0.5rem;
+  font-size: 1rem;
   text-transform: capitalize;
-  margin: 0 0 0.5rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--borde);
-  position: sticky;
-  top: 0;
-  background: var(--superficie);
+  margin: 0 0 0.6rem;
+}
+
+/* El chip "hoy" no hereda la mayúscula del día. */
+.agenda-cabecera .chip {
+  text-transform: none;
 }
 
 .agenda-conteo {
   margin-left: auto;
   background: var(--fondo);
+  border: 1px solid var(--borde);
   border-radius: 999px;
-  padding: 0 0.45rem;
-  font-size: 0.75rem;
+  padding: 0 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 400;
   color: var(--texto-suave);
 }
 
@@ -328,7 +311,6 @@ th.numero {
   color: var(--neutro);
   font-size: 0.82rem;
   margin: 0;
-  padding: 0.5rem 0;
 }
 
 .agenda-cita {
@@ -336,12 +318,8 @@ th.numero {
   border-left: 3px solid var(--secundario);
   border-radius: 8px;
   padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  background: var(--fondo);
+  background: var(--superficie);
   overflow-wrap: anywhere;
-}
-.agenda-cita:last-child {
-  margin-bottom: 0;
 }
 
 .agenda-fila {
