@@ -2,8 +2,9 @@
 -- El dinero (procedimientos, cobros) y las vistas del panel van en 0004.
 
 -- Búsqueda por nombre de dueño en el CRM. Sin trigramas, `ilike '%pepe%'` es
--- seq scan; con el índice de abajo no lo es.
-create extension if not exists pg_trgm;
+-- seq scan; con el índice de abajo no lo es. En `extensions` y no en `public`:
+-- el linter de Supabase marca como riesgo toda extensión en el esquema público.
+create extension if not exists pg_trgm with schema extensions;
 
 -- ---------------------------------------------------------------- staff
 -- Quién puede ver datos de pacientes. Una fila por empleado con cuenta.
@@ -49,7 +50,7 @@ create table public.duenos (
   actualizado_en timestamptz not null default now()
 );
 
-create index duenos_nombre_idx on public.duenos using gin (nombre gin_trgm_ops);
+create index duenos_nombre_idx on public.duenos using gin (nombre extensions.gin_trgm_ops);
 
 -- ---------------------------------------------------------------- mascotas
 create table public.mascotas (
