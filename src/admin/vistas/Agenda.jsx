@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { CalendarPlus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { citas as leerCitas, guardarCita } from '../db.js'
 import { useAsync } from '../useAsync.js'
 import { Chip, Estado } from '../ui.jsx'
-import { agruparPorHora, fechaLarga, lunes, rango } from '../formato.js'
+import { agruparPorHora, citaACalendario, fechaLarga, lunes, rango } from '../formato.js'
 import { hoyISO } from '../../whatsapp.js'
 
 const ESTADOS = ['agendada', 'confirmada', 'atendida', 'no_asistio', 'cancelada']
@@ -111,6 +111,16 @@ export default function Agenda() {
                         ))}
                       </select>
                       <Chip valor={c.estado} />
+                      <a
+                        className="boton boton-mini boton-suave"
+                        href={citaACalendario(c, c.mascotas?.nombre, c.mascotas?.duenos?.nombre)}
+                        target="_blank"
+                        rel="noopener"
+                        title="Añadir a Google Calendar"
+                      >
+                        <CalendarPlus size={13} aria-hidden="true" />
+                        <span className="pequeno">Calendar</span>
+                      </a>
                     </div>
                   ))}
                 </div>

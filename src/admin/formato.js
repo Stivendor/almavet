@@ -1,4 +1,5 @@
 import { hoyISO } from '../whatsapp.js'
+import { clinica } from '../config.js'
 
 // El COP no tiene centavos; mostrarlos sería ruido en cada precio del panel.
 const cop = new Intl.NumberFormat('es-CO', {
@@ -78,6 +79,41 @@ export function rango(desdeISO, dias) {
   hasta.setDate(hasta.getDate() + dias)
   return [d.toISOString(), hasta.toISOString()]
 }
+
+// '2026-03-04T14:00:00.000Z' -> '20260304T140000Z', que es como Google quiere
+// las fechas en el enlace.
+const compacta = (d) => d.toISOString().replace(/[-:]|\.\d{3}/g, '')
+
+// Enlace "añadir a Google Calendar". Mismo criterio que el click-to-chat de
+// WhatsApp: es una URL, no una integración. Sin OAuth, sin tokens que renovar y
+// sin un proyecto en Google Cloud que mantener. Cada quien la abre y guarda el
+// evento en su propio calendario.
+//
+// Nota: lo que se ponga en `detalles` viaja a Google. Por eso no lleva el
+// teléfono del dueño — quien atiende lo tiene en el panel.
+export function enlaceCalendario({ titulo, inicio, duracionMin = 30, detalles, lugar }) {
+  const ini = new Date(inicio)
+  const fin = new Date(ini.getTime() + duracionMin * 60000)
+  const p = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: titulo,
+    dates: `${compacta(ini)}/${compacta(fin)}`,
+    details: detalles ?? '',
+    location: lugar ?? `${clinica.direccion}, ${clinica.ciudad}`,
+  })
+  return `https://calendar.google.com/calendar/render?${p}`
+}
+
+// El título y el detalle de una cita, en el formato que se guarda en el calendario.
+export const citaACalendario = (cita, mascota, dueno) =>
+  enlaceCalendario({
+    titulo: `${mascota} · ${cita.rama === 'estilista' ? 'Estilista' : 'Clínica'} · AlmaVET`,
+    inicio: cita.fecha_hora,
+    duracionMin: cita.duracion_min,
+    detalles: [dueno && `Dueño: ${dueno}`, cita.motivo && `Motivo: ${cita.motivo}`]
+      .filter(Boolean)
+      .join('\n'),
+  })
 
 // Lunes de la semana que contiene la fecha dada.
 export function lunes(iso) {

@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react'
-import { MessageCircle, Pencil, Plus, Trash2 } from 'lucide-react'
+import { CalendarPlus, MessageCircle, Pencil, Plus, Trash2 } from 'lucide-react'
 import {
   anularCobro,
   citasDeMascota,
@@ -18,7 +18,7 @@ import { useAsync } from '../useAsync.js'
 import { Campo, Chip, Dialogo, ErrorLinea, Estado } from '../ui.jsx'
 import { useGuardado } from '../useGuardado.js'
 import { FormMascota } from './formularios.jsx'
-import { dinero, edad, fechaLarga, hora, totalCobro } from '../formato.js'
+import { citaACalendario, dinero, edad, fechaLarga, hora, totalCobro } from '../formato.js'
 import { enlaceWhatsAppA, formatoTelefono, hoyISO } from '../../whatsapp.js'
 import { clinica } from '../../config.js'
 
@@ -115,7 +115,7 @@ export default function FichaMascota({ id }) {
           {pestana === 'preventivos' && <Preventivos mascotaId={m.id} />}
           {pestana === 'peso' && <Peso mascotaId={m.id} />}
           {pestana === 'cobros' && <Cobros mascota={m} />}
-          {pestana === 'citas' && <Citas mascotaId={m.id} />}
+          {pestana === 'citas' && <Citas mascota={m} />}
 
           {editando && (
             <Dialogo titulo={`Editar a ${m.nombre}`} onCerrar={() => setEditando(false)}>
@@ -728,8 +728,8 @@ function FormCobro({ mascota, alListo, onCancelar }) {
 }
 
 // ------------------------------------------------------------------ citas
-function Citas({ mascotaId }) {
-  const { datos, cargando, error } = useAsync(() => citasDeMascota(mascotaId), [mascotaId])
+function Citas({ mascota }) {
+  const { datos, cargando, error } = useAsync(() => citasDeMascota(mascota.id), [mascota.id])
 
   return (
     <Estado cargando={cargando} error={error}>
@@ -745,6 +745,7 @@ function Citas({ mascotaId }) {
                 <th>Rama</th>
                 <th>Motivo</th>
                 <th>Estado</th>
+                <th />
               </tr>
             </thead>
             <tbody>
@@ -756,6 +757,16 @@ function Citas({ mascotaId }) {
                   <td>{c.motivo ?? '—'}</td>
                   <td>
                     <Chip valor={c.estado} />
+                  </td>
+                  <td>
+                    <a
+                      className="boton boton-mini boton-suave"
+                      href={citaACalendario(c, mascota.nombre, mascota.duenos?.nombre)}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      <CalendarPlus size={13} aria-hidden="true" /> Calendar
+                    </a>
                   </td>
                 </tr>
               ))}

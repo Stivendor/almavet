@@ -1,6 +1,15 @@
 // node src/admin/formato.test.mjs
 import assert from 'node:assert/strict'
-import { agruparPorHora, edad, fechaLarga, lunes, rango, totalCobro } from './formato.js'
+import {
+  agruparPorHora,
+  citaACalendario,
+  edad,
+  enlaceCalendario,
+  fechaLarga,
+  lunes,
+  rango,
+  totalCobro,
+} from './formato.js'
 
 // Fechas sin hora: el bug clásico es pasarlas por new Date() y ver el día anterior.
 assert.equal(fechaLarga('2026-03-04'), '4 de marzo de 2026')
@@ -57,5 +66,36 @@ assert.equal(lunes('2026-03-08'), '2026-03-02', 'el domingo cierra la semana, no
 // El rango cubre exactamente los días pedidos, sin importar la zona horaria.
 const [desde, hasta] = rango('2026-03-04', 7)
 assert.equal((new Date(hasta) - new Date(desde)) / 86400000, 7)
+
+// Google Calendar: fechas en UTC compacto y la duración sumada al inicio.
+const cal = new URL(
+  enlaceCalendario({ titulo: 'Luna', inicio: '2026-03-04T14:00:00.000Z', duracionMin: 90 }),
+)
+assert.equal(cal.origin + cal.pathname, 'https://calendar.google.com/calendar/render')
+assert.equal(cal.searchParams.get('action'), 'TEMPLATE')
+assert.equal(cal.searchParams.get('text'), 'Luna')
+assert.equal(cal.searchParams.get('dates'), '20260304T140000Z/20260304T153000Z')
+// El lugar sale de config.js cuando no se pasa uno.
+assert.match(cal.searchParams.get('location'), /Medellín/)
+
+// Cruzar la medianoche no rompe la fecha de fin.
+assert.equal(
+  new URL(
+    enlaceCalendario({ titulo: 'x', inicio: '2026-03-04T23:30:00.000Z', duracionMin: 60 }),
+  ).searchParams.get('dates'),
+  '20260304T233000Z/20260305T003000Z',
+)
+
+const enlaceCita = new URL(
+  citaACalendario(
+    { rama: 'clinica', fecha_hora: '2026-03-04T14:00:00.000Z', duracion_min: 30, motivo: 'control' },
+    'Luna',
+    'Ana',
+  ),
+)
+assert.equal(enlaceCita.searchParams.get('text'), 'Luna · Clínica · AlmaVET')
+assert.equal(enlaceCita.searchParams.get('details'), 'Dueño: Ana\nMotivo: control')
+// El teléfono del dueño no viaja a Google.
+assert.doesNotMatch(enlaceCita.search, /\+57/)
 
 console.log('formato: ok')
