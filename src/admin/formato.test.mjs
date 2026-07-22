@@ -95,11 +95,26 @@ const enlaceCita = new URL(
     { rama: 'clinica', fecha_hora: '2026-03-04T14:00:00.000Z', duracion_min: 30, motivo: 'control' },
     'Luna',
     'Ana',
+    '+573001112233',
   ),
 )
 assert.equal(enlaceCita.searchParams.get('text'), 'Luna · Clínica · AlmaVET')
-assert.equal(enlaceCita.searchParams.get('details'), 'Dueño: Ana\nMotivo: control')
-// El teléfono del dueño no viaja a Google.
-assert.doesNotMatch(enlaceCita.search, /\+57/)
+// El teléfono va legible, no en E.164: es para marcar desde el evento.
+assert.equal(
+  enlaceCita.searchParams.get('details'),
+  'Dueño: Ana\nTeléfono: 300 111 2233\nMotivo: control',
+)
+
+// Sin teléfono, la línea no aparece (mejor ausente que "Teléfono: undefined").
+assert.equal(
+  new URL(
+    citaACalendario(
+      { rama: 'clinica', fecha_hora: '2026-03-04T14:00:00.000Z', duracion_min: 30 },
+      'Luna',
+      'Ana',
+    ),
+  ).searchParams.get('details'),
+  'Dueño: Ana',
+)
 
 console.log('formato: ok')

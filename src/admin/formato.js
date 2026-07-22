@@ -1,4 +1,4 @@
-import { hoyISO } from '../whatsapp.js'
+import { formatoTelefono, hoyISO } from '../whatsapp.js'
 import { clinica } from '../config.js'
 
 // El COP no tiene centavos; mostrarlos sería ruido en cada precio del panel.
@@ -76,9 +76,6 @@ const compacta = (d) => d.toISOString().replace(/[-:]|\.\d{3}/g, '')
 // WhatsApp: es una URL, no una integración. Sin OAuth, sin tokens que renovar y
 // sin un proyecto en Google Cloud que mantener. Cada quien la abre y guarda el
 // evento en su propio calendario.
-//
-// Nota: lo que se ponga en `detalles` viaja a Google. Por eso no lleva el
-// teléfono del dueño — quien atiende lo tiene en el panel.
 export function enlaceCalendario({ titulo, inicio, duracionMin = 30, detalles, lugar }) {
   const ini = new Date(inicio)
   const fin = new Date(ini.getTime() + duracionMin * 60000)
@@ -93,12 +90,19 @@ export function enlaceCalendario({ titulo, inicio, duracionMin = 30, detalles, l
 }
 
 // El título y el detalle de una cita, en el formato que se guarda en el calendario.
-export const citaACalendario = (cita, mascota, dueno) =>
+// El teléfono va en el detalle a propósito: quien mira el evento en el celular
+// llama o escribe desde ahí, sin abrir el panel. Es dato que viaja a Google —
+// decisión consciente del negocio.
+export const citaACalendario = (cita, mascota, dueno, telefono) =>
   enlaceCalendario({
     titulo: `${mascota} · ${cita.rama === 'estilista' ? 'Estilista' : 'Clínica'} · AlmaVET`,
     inicio: cita.fecha_hora,
     duracionMin: cita.duracion_min,
-    detalles: [dueno && `Dueño: ${dueno}`, cita.motivo && `Motivo: ${cita.motivo}`]
+    detalles: [
+      dueno && `Dueño: ${dueno}`,
+      telefono && `Teléfono: ${formatoTelefono(telefono)}`,
+      cita.motivo && `Motivo: ${cita.motivo}`,
+    ]
       .filter(Boolean)
       .join('\n'),
   })

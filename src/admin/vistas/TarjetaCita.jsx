@@ -48,7 +48,12 @@ export function TarjetaCita({ cita: c, alCambiar }) {
         </a>
         <a
           className="agenda-icono"
-          href={citaACalendario(c, c.mascotas?.nombre, c.mascotas?.duenos?.nombre)}
+          href={citaACalendario(
+            c,
+            c.mascotas?.nombre,
+            c.mascotas?.duenos?.nombre,
+            c.mascotas?.duenos?.telefono,
+          )}
           target="_blank"
           rel="noopener"
           title="Añadir a Google Calendar"

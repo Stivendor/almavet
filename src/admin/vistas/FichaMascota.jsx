@@ -544,7 +544,12 @@ function Citas({ mascota }) {
                   <td>
                     <a
                       className="boton boton-mini boton-suave"
-                      href={citaACalendario(c, mascota.nombre, mascota.duenos?.nombre)}
+                      href={citaACalendario(
+                        c,
+                        mascota.nombre,
+                        mascota.duenos?.nombre,
+                        mascota.duenos?.telefono,
+                      )}
                       target="_blank"
                       rel="noopener"
                     >
