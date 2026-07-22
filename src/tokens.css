@@ -1,0 +1,32 @@
+/* Paleta derivada del logo. Para clonar el sitio a otro negocio se cambia solo este archivo.
+   Vive aparte porque lo comparten la landing (index.css) y el panel (admin/admin.css):
+   dos copias de la misma paleta se desincronizan a la primera vez que alguien cambia un azul. */
+:root {
+  --primario: #1e3a72;
+  --primario-oscuro: #152b55;
+  --secundario: #3ba3d9;
+  --acento: #d32027;
+  --fondo: #eff6fc;
+  --superficie: #ffffff;
+  /* Fondo de tarjetas y del formulario. Cada sección lo redefine si hace falta,
+     así una tarjeta no depende de en qué sección la pongan. */
+  --superficie-alterna: #ffffff;
+  --neutro: #9e9e9e;
+  --borde: #d5dde6;
+  --texto: #1f2933;
+  --texto-suave: #5b6b79;
+  --whatsapp: #25d366;
+
+  /* Estados. Solo los usa el panel, pero el color de "algo va mal" tiene que ser
+     el mismo en los dos sitios. */
+  --exito: #1a7f4b;
+  --alerta: #b45309;
+
+  --radio: 12px;
+  --sombra: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --sombra-alta: 0 8px 24px rgba(30, 58, 114, 0.12);
+
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--texto);
+  background: var(--fondo);
+}

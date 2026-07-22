@@ -14,4 +14,14 @@ const siteUrl = () => ({
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), siteUrl()],
+  build: {
+    // Dos entradas, un solo build. El panel arrastra supabase-js; la landing no
+    // lo ve porque Rollup solo lo mete en el grafo de admin.html.
+    rollupOptions: {
+      input: {
+        main: 'index.html',
+        admin: 'admin.html',
+      },
+    },
+  },
 })

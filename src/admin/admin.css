@@ -1,0 +1,452 @@
+@import '../tokens.css';
+
+/* El panel es una herramienta de trabajo, no una página de marketing: densidad
+   alta, tipografía chica y cero animación. Comparte la paleta con la landing
+   (tokens.css) pero no su layout, así que no importa index.css. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  color: var(--primario);
+  line-height: 1.25;
+  margin: 0 0 0.5rem;
+}
+h1 {
+  font-size: 1.4rem;
+}
+h2 {
+  font-size: 1.15rem;
+}
+h3 {
+  font-size: 1rem;
+}
+
+a {
+  color: var(--primario);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primario);
+  outline-offset: 2px;
+}
+
+/* ---------- Estructura ---------- */
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--primario);
+  color: #fff;
+}
+
+.barra-fila {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+}
+
+.barra-marca {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.barra-usuario {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #cfe0f5;
+}
+
+/* Scroll horizontal en móvil: seis pestañas no caben en 360 px y esconderlas
+   detrás de un menú añade un toque a cada navegación del día. */
+.nav {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0 0.5rem 0.4rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  color: #cfe0f5;
+  text-decoration: none;
+  font-size: 0.88rem;
+}
+.nav a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.nav a[aria-current='page'] {
+  background: #fff;
+  color: var(--primario);
+  font-weight: 600;
+}
+
+.contenido {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 4rem;
+}
+
+.cabecera-vista {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.cabecera-vista h1 {
+  margin: 0;
+}
+
+/* ---------- Tarjetas ---------- */
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.rejilla {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.cifra {
+  display: block;
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--primario);
+  line-height: 1.1;
+}
+.etiqueta {
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+}
+
+.suave {
+  color: var(--texto-suave);
+}
+.pequeno {
+  font-size: 0.85rem;
+}
+
+/* ---------- Tablas ---------- */
+.tabla-marco {
+  overflow-x: auto;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--borde);
+  vertical-align: top;
+}
+
+th {
+  background: var(--fondo);
+  font-weight: 600;
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+td.numero,
+th.numero {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Chips de estado ---------- */
+.chip {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+.chip-nueva,
+.chip-agendada,
+.chip-confirmada {
+  background: #e7f1fb;
+  border-color: #b9d6f2;
+  color: var(--primario);
+}
+.chip-atendida,
+.chip-pagado {
+  background: #e6f5ed;
+  border-color: #b6e0c9;
+  color: var(--exito);
+}
+.chip-urgente,
+.chip-vencido,
+.chip-no_asistio {
+  background: #fdeaea;
+  border-color: #f5c2c2;
+  color: var(--acento);
+}
+.chip-pendiente,
+.chip-contactada {
+  background: #fdf3e3;
+  border-color: #f0d9ac;
+  color: var(--alerta);
+}
+
+/* ---------- Formularios ---------- */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: var(--superficie);
+  width: 100%;
+}
+
+textarea {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.campo-error {
+  color: var(--acento);
+  font-size: 0.82rem;
+}
+
+.fila {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.fila > * {
+  flex: 1 1 12rem;
+}
+.fila > .encoge {
+  flex: 0 0 auto;
+}
+
+.checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+.checkbox input {
+  width: auto;
+}
+.checkbox label {
+  font-weight: 400;
+  color: var(--texto);
+}
+
+/* ---------- Botones ---------- */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--primario);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.boton:hover {
+  background: var(--primario-oscuro);
+}
+.boton:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.boton-suave {
+  background: var(--superficie);
+  color: var(--primario);
+  border-color: var(--borde);
+}
+.boton-suave:hover {
+  background: var(--fondo);
+}
+
+.boton-peligro {
+  background: var(--superficie);
+  color: var(--acento);
+  border-color: #f5c2c2;
+}
+.boton-peligro:hover {
+  background: #fdeaea;
+}
+
+.boton-wa {
+  background: var(--whatsapp);
+  color: #06331a;
+}
+.boton-wa:hover {
+  background: #1fb855;
+}
+
+.boton-mini {
+  padding: 0.25rem 0.55rem;
+  font-size: 0.82rem;
+}
+
+.acciones {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- Pestañas ---------- */
+.pestanas {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--borde);
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+.pestanas button {
+  border: 0;
+  background: none;
+  font: inherit;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  color: var(--texto-suave);
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.pestanas button[aria-selected='true'] {
+  color: var(--primario);
+  font-weight: 600;
+  border-bottom-color: var(--primario);
+}
+
+/* ---------- Diálogo ---------- */
+dialog {
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 0;
+  width: min(38rem, calc(100vw - 2rem));
+  box-shadow: var(--sombra-alta);
+}
+dialog::backdrop {
+  background: rgba(15, 26, 45, 0.45);
+}
+.dialogo-cuerpo {
+  padding: 1.1rem;
+}
+.dialogo-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1.1rem;
+  border-bottom: 1px solid var(--borde);
+}
+.dialogo-cabecera h2 {
+  margin: 0;
+}
+.dialogo-cabecera button {
+  margin-left: auto;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--texto-suave);
+  padding: 0.2rem;
+  line-height: 0;
+}
+
+/* ---------- Estados ---------- */
+.aviso {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radio);
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--texto-suave);
+}
+.aviso-error {
+  border-color: #f5c2c2;
+  background: #fdeaea;
+  color: #8c1a1f;
+}
+
+/* ---------- Login ---------- */
+.login {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+.login form {
+  width: min(22rem, 100%);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 1.5rem;
+  box-shadow: var(--sombra);
+}
