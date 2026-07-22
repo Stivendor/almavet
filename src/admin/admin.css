@@ -220,6 +220,51 @@ a {
   font-weight: 600;
 }
 
+/* ---------- Píldoras de filtro (embudo de solicitudes) ---------- */
+.pildoras {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.pildora {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--superficie);
+  color: var(--texto-suave);
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.7rem;
+  cursor: pointer;
+}
+.pildora:hover {
+  border-color: var(--secundario);
+  color: var(--primario);
+}
+.pildora[aria-pressed='true'] {
+  background: var(--primario);
+  border-color: var(--primario);
+  color: #fff;
+  font-weight: 600;
+}
+
+.pildora-conteo {
+  background: var(--fondo);
+  color: var(--texto-suave);
+  border-radius: 999px;
+  padding: 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.pildora[aria-pressed='true'] .pildora-conteo {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
 /* Botón que se comporta como enlace, para acciones dentro de un texto. */
 .enlace {
   border: 0;

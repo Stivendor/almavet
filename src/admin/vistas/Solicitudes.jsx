@@ -38,8 +38,14 @@ function Detalle({ s }) {
 
 export default function Solicitudes() {
   const [filtro, setFiltro] = useState('nueva')
-  const { datos, cargando, error, recargar } = useAsync(() => solicitudes(filtro), [filtro])
+  // Se traen todas y se filtra en memoria: son cientos a lo sumo, y así las
+  // píldoras muestran la carga de cada etapa sin una consulta por conteo.
+  const { datos, cargando, error, recargar } = useAsync(() => solicitudes(), [])
   const [convirtiendo, setConvirtiendo] = useState(null)
+
+  const conteos = {}
+  for (const s of datos ?? []) conteos[s.estado] = (conteos[s.estado] ?? 0) + 1
+  const visibles = filtro ? datos?.filter((s) => s.estado === filtro) : datos
 
   const cambiarEstado = async (id, estado) => {
     await actualizarSolicitud(id, { estado })
@@ -51,23 +57,33 @@ export default function Solicitudes() {
     <>
       <div className="cabecera-vista">
         <h1>Solicitudes</h1>
-        <select
-          aria-label="Filtrar por estado"
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-          style={{ width: 'auto' }}
+      </div>
+
+      {/* El embudo de un vistazo: cuántas hay en cada etapa, sin cambiar de vista. */}
+      <div className="pildoras" role="group" aria-label="Filtrar por estado">
+        {ESTADOS.map((e) => (
+          <button
+            key={e}
+            className="pildora"
+            type="button"
+            aria-pressed={filtro === e}
+            onClick={() => setFiltro(e)}
+          >
+            {e} <span className="pildora-conteo">{conteos[e] ?? 0}</span>
+          </button>
+        ))}
+        <button
+          className="pildora"
+          type="button"
+          aria-pressed={filtro === ''}
+          onClick={() => setFiltro('')}
         >
-          <option value="">Todas</option>
-          {ESTADOS.map((e) => (
-            <option key={e} value={e}>
-              {e}
-            </option>
-          ))}
-        </select>
+          todas <span className="pildora-conteo">{datos?.length ?? 0}</span>
+        </button>
       </div>
 
       <Estado cargando={cargando} error={error}>
-        {datos?.length === 0 ? (
+        {visibles?.length === 0 ? (
           <p className="aviso">
             No hay solicitudes {filtro && `en estado "${filtro}"`}.{' '}
             {filtro && (
@@ -90,7 +106,7 @@ export default function Solicitudes() {
                 </tr>
               </thead>
               <tbody>
-                {datos?.map((s) => (
+                {visibles?.map((s) => (
                   <tr key={s.id}>
                     <td className="pequeno suave">
                       {new Date(s.creada_en).toLocaleDateString('es-CO')}
