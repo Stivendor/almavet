@@ -17,6 +17,9 @@ dist-ssr
 .env.*
 !.env.example
 
+# Estado local de la herramienta de diseño, no fuente del proyecto.
+.impeccable/live/sessions/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

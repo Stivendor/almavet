@@ -1,6 +1,6 @@
-/* Paleta derivada del logo. Para clonar el sitio a otro negocio se cambia solo este archivo.
-   Vive aparte porque lo comparten la landing (index.css) y el panel (admin/admin.css):
-   dos copias de la misma paleta se desincronizan a la primera vez que alguien cambia un azul. */
+/* Paleta derivada del logo. Para clonar el sitio a otro negocio se cambia solo
+   este archivo. Vive aparte de index.css para que la paleta se lea de un vistazo
+   sin bajar por el layout. */
 :root {
   --primario: #1e3a72;
   --primario-oscuro: #152b55;

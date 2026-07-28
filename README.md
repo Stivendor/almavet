@@ -1,66 +1,54 @@
 # AlmaVET
 
-Dos aplicaciones en un repo, un solo build de Vite:
+Landing pública del Centro Veterinario AlmaVet. Captura solicitudes de cita y abre
+WhatsApp con el mensaje ya escrito.
 
-| Entrada | Ruta | Qué es |
-|---|---|---|
-| `index.html` | `/` | Landing pública. Captura solicitudes de cita y abre WhatsApp. |
-| `admin.html` | `/admin` | CRM del equipo: solicitudes, fichas, historia clínica, agenda, cobros. |
+No hay panel: la operación interna (historia clínica, agenda, cobros) la lleva OkVet.
+Este repo es el sitio y nada más.
 
-La landing **no carga nada del panel** (ni `supabase-js`): escribe en el Data API con un
-`fetch` de 0 kB desde `src/supabase.js`. El panel es el único que necesita sesión.
+La landing no carga `supabase-js`: escribe en el Data API con un `fetch` de 0 kB desde
+`src/supabase.js`.
 
 ## Desarrollo
 
 ```bash
 npm install
 cp .env.example .env.local   # y rellenar las dos variables
-npm run dev                  # landing en /, panel en /admin.html
+npm run dev
 npm test                     # funciones puras (node --test)
 npm run lint
 npm run build
 ```
 
+Sin las variables de entorno el sitio funciona igual: deja de guardar la solicitud en
+la base y solo abre WhatsApp.
+
 ## Base de datos
 
-Migraciones en `supabase/migrations/`, en orden:
+La única tabla que usa el sitio es `solicitudes`. Migraciones en `supabase/migrations/`,
+en orden:
 
 | Archivo | Contenido |
 |---|---|
 | `0001_solicitudes.sql` | Tabla `solicitudes` que llena el formulario web |
-| `0002_crm.sql` | `staff`, `duenos`, `mascotas`, `citas`, `visitas`, `preventivos`, RLS y la RPC `convertir_solicitud` |
+| `0002_crm.sql` | Esquema del CRM que ya no se usa desde aquí — se conserva porque sigue aplicado en la base |
 | `0003_autorizacion_datos.sql` | Prueba de autorización (Ley 1581/2012) |
-| `0004_cobros.sql` | `procedimientos`, `cobros`, `cobro_items`, vistas de caja y recordatorios, RPC `crear_cobro` |
+| `0004_cobros.sql` | Cobros del CRM retirado, misma razón que `0002` |
 
-Aplicarlas con `supabase db push` (o pegando cada archivo en el SQL Editor, en orden).
-
-### Dar acceso a alguien del equipo
-
-1. Dashboard > Authentication > Users > **Add user** (correo y contraseña).
-2. Ejecutar `supabase/seed_staff.sql` con el UUID de ese usuario.
-
-Sin fila en `staff` la cuenta entra al panel pero no ve ni un dato: quien autoriza es
-`public.es_staff()` dentro de las policies, no el login. El rol `admin` es además el único
-que puede cambiar la lista de precios.
-
-## Seguridad
-
-La llave publishable viaja en los dos bundles: es pública por diseño. Lo que protege las
-historias clínicas es RLS. Ninguna tabla del CRM tiene policy para `anon`, y `0002` les
-hace `revoke all ... from anon` de forma explícita.
+Se aplican a mano en el SQL Editor, en orden. `anon` solo puede insertar en
+`solicitudes`; el resto de tablas le tiene el acceso revocado explícitamente.
 
 ## Estructura
 
 ```
+index.html                                    entrada única
 src/
-  App.jsx, AppointmentForm.jsx, supabase.js   landing
-  whatsapp.js, config.js, tokens.css          compartido por las dos apps
-  admin/
-    cliente.js   createClient de supabase-js (solo aquí)
-    db.js        todas las consultas del panel
-    router.js    enrutado por hash
-    formato.js   dinero, fechas, edad, agrupaciones
-    vistas/      una pantalla por archivo
+  App.jsx, AppointmentForm.jsx                la página
+  supabase.js                                 el POST a solicitudes
+  whatsapp.js, config.js                      mensaje y datos del negocio
+  tokens.css, index.css                       paleta y layout
+public/
+  logo.jpg, sede.jpg, legal.html              material real
 ```
 
 Para clonar el sitio a otro negocio se editan `src/config.js` (datos) y `src/tokens.css`

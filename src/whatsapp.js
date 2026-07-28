@@ -56,9 +56,3 @@ export function construirMensaje(f) {
 
 export const enlaceWhatsApp = (texto) =>
   `https://wa.me/${clinica.whatsapp}?text=${encodeURIComponent(texto)}`
-
-// Al revés que el anterior: la clínica le escribe a un cliente. Lo usa el panel
-// para contactar solicitudes y mandar recordatorios de refuerzos sin pagar la
-// API de WhatsApp Business — es el mismo click-to-chat, con otro destinatario.
-export const enlaceWhatsAppA = (telefonoE164, texto) =>
-  `https://wa.me/${String(telefonoE164).replace(/\D/g, '')}?text=${encodeURIComponent(texto)}`
