@@ -2,17 +2,19 @@
    este archivo. Vive aparte de index.css para que la paleta se lea de un vistazo
    sin bajar por el layout. */
 :root {
-  --primario: #1e3a72;
-  --primario-oscuro: #152b55;
-  --secundario: #3ba3d9;
-  --acento: #d32027;
-  --fondo: #eff6fc;
+  --primario: #153f68;
+  --primario-oscuro: #0f2f4e;
+  --secundario: #2fa8a0;
+  --calido: #f2b84b;
+  --menta: #dff4ee;
+  --acento: #d64545;
+  --fondo: #f4f8f7;
   --superficie: #ffffff;
   /* Fondo de tarjetas y del formulario. Cada sección lo redefine si hace falta,
      así una tarjeta no depende de en qué sección la pongan. */
   --superficie-alterna: #ffffff;
   --neutro: #9e9e9e;
-  --borde: #d5dde6;
+  --borde: #d6e2df;
   --texto: #1f2933;
   --texto-suave: #5b6b79;
   --whatsapp: #25d366;
@@ -22,9 +24,9 @@
   --exito: #1a7f4b;
   --alerta: #b45309;
 
-  --radio: 12px;
-  --sombra: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --sombra-alta: 0 8px 24px rgba(30, 58, 114, 0.12);
+  --radio: 8px;
+  --sombra: 0 10px 30px rgba(15, 47, 78, 0.08);
+  --sombra-alta: 0 18px 48px rgba(15, 47, 78, 0.14);
 
   font-family: 'Inter', system-ui, sans-serif;
   color: var(--texto);
