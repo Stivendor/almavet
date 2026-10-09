@@ -1,16 +1,55 @@
-# React + Vite
+# AlmaVET
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Landing pública del Centro Veterinario AlmaVet. Captura solicitudes de cita y abre
+WhatsApp con el mensaje ya escrito.
 
-Currently, two official plugins are available:
+No hay panel: la operación interna (historia clínica, agenda, cobros) la lleva OkVet.
+Este repo es el sitio y nada más.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+La landing no carga `supabase-js`: escribe en el Data API con un `fetch` de 0 kB desde
+`src/supabase.js`.
 
-## React Compiler
+## Desarrollo
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+cp .env.example .env.local   # y rellenar las dos variables
+npm run dev
+npm test                     # funciones puras (node --test)
+npm run lint
+npm run build
+```
 
-## Expanding the Oxlint configuration
+Sin las variables de entorno el sitio funciona igual: deja de guardar la solicitud en
+la base y solo abre WhatsApp.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Base de datos
+
+La única tabla que usa el sitio es `solicitudes`. Migraciones en `supabase/migrations/`,
+en orden:
+
+| Archivo | Contenido |
+|---|---|
+| `0001_solicitudes.sql` | Tabla `solicitudes` que llena el formulario web |
+| `0002_crm.sql` | Esquema del CRM que ya no se usa desde aquí — se conserva porque sigue aplicado en la base |
+| `0003_autorizacion_datos.sql` | Prueba de autorización (Ley 1581/2012) |
+| `0004_cobros.sql` | Cobros del CRM retirado, misma razón que `0002` |
+
+Se aplican a mano en el SQL Editor, en orden. `anon` solo puede insertar en
+`solicitudes`; el resto de tablas le tiene el acceso revocado explícitamente.
+
+## Estructura
+
+```
+index.html                                    entrada única
+src/
+  App.jsx, AppointmentForm.jsx                la página
+  supabase.js                                 el POST a solicitudes
+  whatsapp.js, config.js                      mensaje y datos del negocio
+  tokens.css, index.css                       paleta y layout
+public/
+  logo.jpg, sede.jpg, legal.html              material real
+```
+
+Para clonar el sitio a otro negocio se editan `src/config.js` (datos) y `src/tokens.css`
+(paleta).
